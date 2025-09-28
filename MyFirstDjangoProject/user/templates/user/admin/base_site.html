@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin | {{ block.super }}{% endblock %}
+
+{% block branding %}
+<div style="display:flex; gap:10px; align-items:center;">
+    <a href="{% url 'user_list' %}" class="btn btn-sm btn-primary">⬅ Back to User App</a>
+    <a href="{% url 'admin:index' %}" class="btn btn-sm btn-warning">⚙️ Admin Home</a>
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
