@@ -1,0 +1,7 @@
+{% extends "user/base.html" %}
+{% block title %}{{ user.name }}{% endblock %}
+{% block content %}
+  <h2>{{ user.name }}</h2>
+  <p>ID: {{ user.id }}</p>
+  <p><a href="{% url 'user_list' %}">Back to list</a></p>
+{% endblock %}
