@@ -4,7 +4,7 @@ from django.db import models
 from datetime import datetime
 from django.utils import timezone
 
-from django.db import models
+
 
 class UserProfile(models.Model):
     fullname = models.CharField(max_length=150, verbose_name="Full Name")
