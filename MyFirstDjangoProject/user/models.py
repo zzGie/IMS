@@ -10,7 +10,7 @@ def image_path(instance, filename):
     basefilename, file_extension = os.path.splitext(filename)
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
     randomstr = ''.join((random.choice(chars)) for x in range(10))
-    return f'profile_pic/{basefilename}_{randomstr}{file_extension}'
+    return f'profilepic/{basefilename}_{randomstr}{file_extension}'
 
 class UserProfile(models.Model):
     fullname = models.CharField(max_length=150, verbose_name="Full Name")
@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=10, choices=[("Male", "Male"), ("Female", "Female")])
     contact_number = models.CharField(max_length=20 , unique=True)
     address = models.CharField(max_length=255, blank=True, null=True, unique=False)
-    user_image = models.ImageField(upload_to=image_path, default='profile_pic/image.png')
+    user_image = models.ImageField(upload_to=image_path, default='profilepic/image.png')
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=128)  # usually hashed, not plain text
 

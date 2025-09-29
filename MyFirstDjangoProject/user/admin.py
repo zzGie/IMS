@@ -21,7 +21,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     # Optional: Make the edit form more structured
     fieldsets = (
         ('Personal Info', {
-            'fields': ('fullname', 'email', 'gender', 'contact_number', 'user_image')
+            'fields': ('fullname', 'email', 'gender', 'contact_number', 'image_tag', 'address')
         }),
         ('Account Info', {
             'fields': ('username', 'password')
