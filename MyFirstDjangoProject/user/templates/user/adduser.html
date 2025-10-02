@@ -1,0 +1,88 @@
+{% include "partials/header.html" %}
+<body class="sb-nav-fixed">
+
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Add New User</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'userlist' %}">Users</a></li>
+                        <li class="breadcrumb-item active">Add User</li>
+                    </ol>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-user-plus"></i> Create User
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" name="fullname" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" name="username" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" name="password" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="text" name="contact_number" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Gender</label>
+                                        <select name="gender" class="form-select" required>
+                                            <option value="">-- Select --</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <textarea name="address" rows="2" class="form-control"></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Profile Image</label>
+                                    <input type="file" name="user_image" class="form-control">
+                                </div>
+
+                                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
+                                <a href="{% url 'userlist' %}" class="btn btn-secondary">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+</body>
+</html>

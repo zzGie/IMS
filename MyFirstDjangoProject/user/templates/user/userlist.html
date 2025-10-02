@@ -1,0 +1,74 @@
+{% include "partials/header.html" %}
+<body class="sb-nav-fixed">
+
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">User List</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Users</li>
+                    </ol>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-users"></i> Registered Users
+                        </div>
+                        <div class="card-body">
+                            <table id="datatablesSimple" class="table table-bordered table-hover text-center align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Profile</th>
+                                        <th>Full Name</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Password</th>
+                                        <th>Contact</th>
+                                        <th>Gender</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in user_list %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>
+                                            {% if user.user_image %}
+                                                <img src="{{ user.user_image.url }}" width="50" height="50" class="rounded-circle shadow-sm">
+                                            {% else %}
+                                                <span class="text-muted">No Image</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.fullname }}</td>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.password }}</td> <!-- ⚠️ Not secure, just for testing -->
+                                        <td>{{ user.contact_number }}</td>
+                                        <td>{{ user.gender }}</td>
+                                        <td>{{ user.address|default:"-" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted">No users found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+</body>
+</html>
