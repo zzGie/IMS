@@ -1,32 +1,51 @@
 from django.contrib import admin
-from .models import UserProfile
+from .models import UserProfile, InventoryItem
 
-# Customize admin site headers
+# ✅ Customize admin site headers
 admin.site.site_header = "ADMINISTRATION"
 admin.site.site_title = "Administrator Area"
-admin.site.index_title = "Welcome to my First CRUD Application"
+admin.site.index_title = "Welcome to My First CRUD Application"
 
-# Register UserProfile with custom admin
+
+# ✅ UserProfile Admin
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    # Columns to show in the list view (table)
-    list_display = ('id', 'fullname', 'email', 'gender', 'contact_number', 'image_tag', 'username')
-    
-    # Enable search
-    search_fields = ('fullname', 'email', 'username')
-    
-    # Optional: Add filters on the sidebar
+    list_display = (
+        'id',
+        'fullname',
+        'email',
+        'gender',
+        'contact_number',
+        'image_tag',
+        'username'
+    )
+    search_fields = ('fullname', 'email', 'username', 'contact_number')
     list_filter = ('gender',)
-    
-    # Optional: Make the edit form more structured
     fieldsets = (
-        ('Personal Info', {
-            'fields': ('fullname', 'email', 'gender', 'contact_number', 'user_image', 'address')
+        ('Personal Information', {
+            'fields': ('fullname', 'email', 'gender', 'contact_number', 'address', 'user_image', 'image_tag')
         }),
-        ('Account Info', {
+        ('Account Information', {
             'fields': ('username', 'password')
         }),
     )
-
-    # Make the image_tag read-only so it only displays in list view
     readonly_fields = ('image_tag',)
+
+
+# ✅ InventoryItem Admin
+@admin.register(InventoryItem)
+class InventoryItemAdmin(admin.ModelAdmin):
+    list_display = ('ItemID', 'ItemName', 'Category', 'Quantity', 'Price', 'DateAdded')
+    search_fields = ('ItemName', 'Category')
+    list_filter = ('Category',)
+    ordering = ('-DateAdded',)  # Newest first
+
+    fieldsets = (
+        ('Item Information', {
+            'fields': ('ItemName', 'Category', 'Quantity', 'Price', 'Description')
+        }),
+        ('System Fields', {
+            'fields': ('DateAdded',),
+        }),
+    )
+    readonly_fields = ('DateAdded',)

@@ -1,27 +1,40 @@
 <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="{% url 'index' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                           
-                            <div class="sb-sidenav-menu-heading">Main</div>
-                            <a class="nav-link" href="{% url 'adduser' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                Add User
-                            </a>
-                            <a class="nav-link" href="{% url 'userlist' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                                User Lists
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Start Bootstrap
-                    </div>
-                </nav>
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <!-- Core Section -->
+                <div class="sb-sidenav-menu-heading">Core</div>
+                <a class="nav-link" href="{% url 'index' %}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Dashboard
+                </a>
+
+                <!-- Main Section -->
+                <div class="sb-sidenav-menu-heading">Main</div>
+                <a class="nav-link" href="{% url 'adduser' %}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                    Add User
+                </a>
+                <a class="nav-link" href="{% url 'userlist' %}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                    User Lists
+                </a>
+
+                <!-- ✅ Inventory Management Section -->
+                <div class="sb-sidenav-menu-heading">Inventory</div>
+                <a class="nav-link" href="{% url 'add_inventory_item' %}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-plus-circle"></i></div>
+                    Add Item
+                </a>
+                <a class="nav-link" href="{% url 'inventory_list' %}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-boxes"></i></div>
+                    Inventory List
+                </a>
             </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            Start Bootstrap
+        </div>
+    </nav>
+</div>

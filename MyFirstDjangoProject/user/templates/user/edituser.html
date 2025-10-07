@@ -1,0 +1,125 @@
+{% include "partials/header.html" %}
+
+<body class="sb-nav-fixed bg-light">
+
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- Header Section -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="fw-bold text-primary mb-1">
+                                <i class="fas fa-user-edit me-2"></i> Edit User
+                            </h1>
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'userlist' %}" class="text-decoration-none text-muted">Users</a>
+                                </li>
+                                <li class="breadcrumb-item active text-primary fw-semibold">Edit User</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form Card -->
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-gradient-primary text-white fw-bold">
+                            <i class="fas fa-user-cog me-2"></i> Update User Information
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" name="fullname" class="form-control" value="{{ user.fullname }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password <small class="text-muted">(leave blank to keep current)</small></label>
+                                        <input type="password" name="password" class="form-control" placeholder="Enter new password">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Gender</label>
+                                        <select name="gender" class="form-select">
+                                            <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+                                            <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="text" name="contact_number" class="form-control" value="{{ user.contact_number }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Address</label>
+                                        <input type="text" name="address" class="form-control" value="{{ user.address }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Profile Image</label><br>
+                                    {% if user.user_image %}
+                                        <img src="{{ user.user_image.url }}" width="100" height="100" class="rounded-circle mb-2 border">
+                                    {% endif %}
+                                    <input type="file" name="user_image" class="form-control">
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <a href="{% url 'userlist' %}" class="btn btn-secondary me-2">Cancel</a>
+                                    <button type="submit" class="btn btn-gradient-primary">
+                                        <i class="fas fa-save me-1"></i> Update User
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+        }
+
+        .btn-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: #fff;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
+        }
+    </style>
+
+</body>
+</html>
