@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import UserProfile
 from django.db import IntegrityError
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def index(request):
@@ -48,3 +49,41 @@ def adduser(request):
             return redirect("adduser")
     
     return render(request, "user/adduser.html")
+
+
+def edituser(request, id):
+    """Update: Edit user details"""
+    user = get_object_or_404(UserProfile, id=id)
+
+    if request.method == "POST":
+        user.first_name = request.POST.get("first_name")
+        user.last_name = request.POST.get("last_name")
+        user.email = request.POST.get("email")
+        user.contact_number = request.POST.get("contact_number")
+        user.gender = request.POST.get("gender")
+        user.address = request.POST.get("address")
+        user.username = request.POST.get("username")
+
+        if request.POST.get("password"):
+            user.password = make_password(request.POST.get("password"))
+
+        if request.FILES.get("user_image"):
+            user.user_image = request.FILES.get("user_image")
+
+        try:
+            user.save()
+            messages.success(request, "✅ User updated successfully!")
+            return redirect("userlist")
+        except IntegrityError:
+            messages.error(request, "⚠️ Email or Username already exists.")
+            return redirect("edituser", id=id)
+
+    return render(request, "user/edituser.html", {"user": user})
+
+
+def deleteuser(request, id):
+    """Delete: Remove user"""
+    user = get_object_or_404(UserProfile, id=id)
+    user.delete()
+    messages.success(request, "🗑️ User deleted successfully!")
+    return redirect("userlist")
