@@ -1,5 +1,6 @@
 {% include "partials/header.html" %}
-<body class="sb-nav-fixed">
+
+<body class="sb-nav-fixed bg-light">
 
     {% include "partials/navbar.html" %}
 
@@ -8,60 +9,88 @@
 
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4">User List</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Users</li>
-                    </ol>
+                <div class="container-fluid px-4 py-4">
 
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <i class="fas fa-users"></i> Registered Users
+                    <!-- Header Section -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="fw-bold text-primary mb-1">
+                                <i class="fas fa-users me-2"></i> Manage Users
+                            </h1>
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item active text-primary fw-semibold">Users</li>
+                            </ol>
                         </div>
-                        <div class="card-body">
-                            <table id="datatablesSimple" class="table table-bordered table-hover text-center align-middle">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Profile</th>
-                                        <th>Full Name</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Password</th>
-                                        <th>Contact</th>
-                                        <th>Gender</th>
-                                        <th>Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for user in user_list %}
-                                    <tr>
-                                        <td>{{ user.id }}</td>
-                                        <td>
-                                            {% if user.user_image %}
-                                                <img src="{{ user.user_image.url }}" width="50" height="50" class="rounded-circle shadow-sm">
-                                            {% else %}
-                                                <span class="text-muted">No Image</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ user.fullname }}</td>
-                                        <td>{{ user.username }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.password }}</td> <!-- ⚠️ Not secure, just for testing -->
-                                        <td>{{ user.contact_number }}</td>
-                                        <td>{{ user.gender }}</td>
-                                        <td>{{ user.address|default:"-" }}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted">No users found.</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <a href="{% url 'adduser' %}" class="btn btn-gradient-primary shadow-sm">
+                            <i class="fas fa-user-plus me-2"></i> Add New User
+                        </a>
+                    </div>
+
+                    <!-- Table Card -->
+                    <div class="card shadow border-0 table-card">
+                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-users me-2"></i> Registered Users</span>
+                            <span class="badge bg-light text-primary">{{ user_list|length }} Total</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table id="datatablesSimple" class="table table-hover align-middle text-center mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Profile</th>
+                                            <th>Full Name</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Contact</th>
+                                            <th>Gender</th>
+                                            <th>Address</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in user_list %}
+                                        <tr>
+                                            <td>{{ user.id }}</td>
+                                            <td>
+                                                {% if user.user_image %}
+                                                    <img src="{{ user.user_image.url }}" width="50" height="50" class="rounded-circle shadow profile-pic">
+                                                {% else %}
+                                                    <div class="no-image-placeholder">👤</div>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ user.fullname }}</td>
+                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.contact_number|default:"-" }}</td>
+                                            <td>{{ user.gender|default:"-" }}</td>
+                                            <td>{{ user.address|default:"-" }}</td>
+                                            <td>
+                                                <a href="{% url 'edituser' user.id %}" class="btn btn-sm btn-outline-primary me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'deleteuser' user.id %}" class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Are you sure you want to delete this user?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="9" class="text-muted py-4">
+                                                <i class="fas fa-info-circle me-2"></i>No users found.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </main>
 
@@ -70,5 +99,67 @@
     </div>
 
     {% include "partials/scripts.html" %}
+
+    <style>
+        /* Gradient Header */
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+        }
+
+        /* Add User Button */
+        .btn-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: #fff;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
+        }
+
+        /* Card */
+        .table-card {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Profile Image */
+        .profile-pic {
+            object-fit: cover;
+            border: 2px solid #f8f9fa;
+        }
+        .no-image-placeholder {
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9ecef;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        /* Table Styling */
+        table.table thead {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        table.table tbody tr:hover {
+            background-color: #f1f5ff;
+            transition: background 0.2s ease;
+        }
+        table.table td, table.table th {
+            vertical-align: middle;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: #6c757d;
+        }
+    </style>
+
 </body>
 </html>

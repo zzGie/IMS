@@ -28,7 +28,7 @@ class UserProfile(models.Model):
     # ✅ Make image_tag a method of the model
     def image_tag(self):
         if self.user_image:
-            return mark_safe(f'<img src="{self.user_image.url}" width="100" height="100" />')
+            return mark_safe(f'<img src="{self.user_image.url}" width="250" height="250" />')
         return "-"
     
     image_tag.short_description = 'Profile Image'  # Optional: display name in admin

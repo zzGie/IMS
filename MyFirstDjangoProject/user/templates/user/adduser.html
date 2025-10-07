@@ -1,31 +1,46 @@
 {% include "partials/header.html" %}
-<body class="sb-nav-fixed">
+
+<body class="sb-nav-fixed bg-light">
 
     {% include "partials/navbar.html" %}
-
     <div id="layoutSidenav">
         {% include "partials/sidebar.html" %}
 
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4">Add New User</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'userlist' %}">Users</a></li>
-                        <li class="breadcrumb-item active">Add User</li>
-                    </ol>
-
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-user-plus"></i> Create User
+                <div class="container-fluid px-4 py-4">
+                    
+                    <!-- Page Header -->
+                    <div class="mb-4 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h1 class="fw-bold text-success mb-1"><i class="fas fa-user-plus me-2"></i>Add New User</h1>
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'userlist' %}" class="text-decoration-none text-muted">Users</a>
+                                </li>
+                                <li class="breadcrumb-item active text-success fw-semibold">Add User</li>
+                            </ol>
                         </div>
-                        <div class="card-body">
-                            <form method="POST" enctype="multipart/form-data">
+                        <a href="{% url 'userlist' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+
+                    <!-- Form Card -->
+                    <div class="card form-card shadow border-0">
+                        <div class="card-header bg-gradient-success text-white fw-bold">
+                            <i class="fas fa-user me-2"></i> Create User
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                                 {% csrf_token %}
-                                
-                                <div class="row mb-3">
+
+                                <div class="row g-3 mb-3">
                                     <div class="col-md-6">
+<<<<<<< HEAD
                                         <label class="form-label">First Name</label>
                                         <input type="text" name="first_name" class="form-control" required>
                                     </div>
@@ -40,14 +55,34 @@
                                         <label class="form-label">Username</label>
                                         <input type="text" name="username" class="form-control" required>
                                     </div>
+=======
+                                        <label class="form-label fw-semibold">Full Name</label>
+                                        <input type="text" name="fullname" class="form-control form-control-lg" required>
+                                    </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control" required>
+                                        <label class="form-label fw-semibold">Username</label>
+                                        <input type="text" name="username" class="form-control form-control-lg" required>
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
+                                <div class="row g-3 mb-3">
+>>>>>>> 8f89b27653e9f1ae7b64b7470d889ba28b7a0e95
                                     <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Email</label>
+                                        <input type="email" name="email" class="form-control form-control-lg" required>
+                                    </div>
+<<<<<<< HEAD
+=======
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Password</label>
+                                        <input type="password" name="password" class="form-control form-control-lg" required>
+                                    </div>
+>>>>>>> 8f89b27653e9f1ae7b64b7470d889ba28b7a0e95
+                                </div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+<<<<<<< HEAD
                                         <label class="form-label">Password</label>
                                         <input type="password" name="password" class="form-control" required>
                                     </div>
@@ -55,25 +90,95 @@
                                         <label class="form-label">Contact Number</label>
                                         <input type="text" name="contact_number" class="form-control">
                                     </div>
+=======
+                                        <label class="form-label fw-semibold">Contact Number</label>
+                                        <input type="text" name="contact_number" class="form-control form-control-lg">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Gender</label>
+                                        <select name="gender" class="form-select form-select-lg" required>
+                                            <option value="">-- Select --</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Profile Image</label>
-                                    <input type="file" name="user_image" class="form-control">
+                                    <label class="form-label fw-semibold">Address</label>
+                                    <textarea name="address" rows="2" class="form-control form-control-lg"></textarea>
+>>>>>>> 8f89b27653e9f1ae7b64b7470d889ba28b7a0e95
                                 </div>
 
-                                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
-                                <a href="{% url 'userlist' %}" class="btn btn-secondary">Cancel</a>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Profile Image</label>
+                                    <input type="file" name="user_image" class="form-control form-control-lg">
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="submit" class="btn btn-gradient-success px-4">
+                                        <i class="fas fa-save me-2"></i> Save
+                                    </button>
+                                    <a href="{% url 'userlist' %}" class="btn btn-outline-secondary px-4">
+                                        Cancel
+                                    </a>
+                                </div>
                             </form>
                         </div>
                     </div>
+
                 </div>
             </main>
-
             {% include "partials/footer.html" %}
         </div>
     </div>
 
     {% include "partials/scripts.html" %}
+
+    <style>
+        /* Gradient Header */
+        .bg-gradient-success {
+            background: linear-gradient(45deg, #28a745, #00d27a);
+        }
+
+        /* Form Card Glass Effect */
+        .form-card {
+            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 0.75rem;
+        }
+
+        /* Inputs */
+        .form-control-lg, .form-select-lg {
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            padding: 0.75rem;
+        }
+        .form-control-lg:focus, .form-select-lg:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        /* Gradient Button */
+        .btn-gradient-success {
+            background: linear-gradient(45deg, #28a745, #00d27a);
+            color: white;
+            border: none;
+            transition: 0.3s ease;
+        }
+        .btn-gradient-success:hover {
+            background: linear-gradient(45deg, #1e7e34, #00a664);
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: #6c757d;
+        }
+
+        /* Card Header */
+        .card-header {
+            font-size: 1rem;
+        }
+    </style>
 </body>
 </html>
