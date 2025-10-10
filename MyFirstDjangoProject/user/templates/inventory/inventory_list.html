@@ -1,7 +1,6 @@
 {% include "partials/header.html" %}
 
 <body class="sb-nav-fixed bg-light">
-
     {% include "partials/navbar.html" %}
 
     <div id="layoutSidenav">
@@ -11,39 +10,57 @@
             <main>
                 <div class="container-fluid px-4 py-4">
 
-                    <!-- Header Section -->
+                    <!-- Header -->
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
                         <div>
-                            <h1 class="fw-bold text-primary mb-1">
+                            <h1 class="fw-bold text-primary mb-2" style="font-size: 2.2rem;">
                                 <i class="fas fa-boxes me-2"></i> Manage Inventory
                             </h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0 fs-5">
                                 <li class="breadcrumb-item">
                                     <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
                                 </li>
                                 <li class="breadcrumb-item active text-primary fw-semibold">Inventory</li>
                             </ol>
                         </div>
-                        <a href="{% url 'add_inventory_item' %}" class="btn btn-gradient-primary shadow-sm">
+                        <a href="{% url 'add_inventory_item' %}" class="btn btn-gradient-primary shadow-sm px-4 py-3 fs-5">
                             <i class="fas fa-plus me-2"></i> Add New Item
                         </a>
                     </div>
 
-                    <!-- Table Card -->
-                    <div class="card shadow border-0 table-card">
-                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-list me-2"></i> Inventory List</span>
-                            <span class="badge bg-light text-primary">{{ inventory_list|length }} Total</span>
+                    <!-- Search & Stats -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                        <div>
+                            <input type="text" id="searchInput" class="form-control fs-5"
+                                   placeholder="🔍 Search items..."
+                                   style="width: 350px; padding: 0.85rem 1rem;">
                         </div>
+                        <div class="text-end fs-5">
+                            <span class="badge bg-gradient-primary p-3 fs-5">
+                                Total Items: {{ inventory_list|length }}
+                            </span>
+                            <span class="badge bg-success p-3 fs-5">
+                                Total Stock: {{ total_stock }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="card shadow border-0 table-card">
+                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center fs-5 py-4 px-4">
+                            <span><i class="fas fa-list me-2"></i> Inventory List</span>
+                        </div>
+
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table id="datatablesSimple" class="table table-hover align-middle text-center mb-0">
+                                <table id="inventoryTable" class="table table-hover align-middle text-center mb-0 fs-5">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Item Name</th>
                                             <th>Category</th>
                                             <th>Quantity</th>
+                                            <th>Status</th>
                                             <th>Price</th>
                                             <th>Description</th>
                                             <th>Date Added</th>
@@ -54,19 +71,34 @@
                                         {% for item in inventory_list %}
                                         <tr>
                                             <td>{{ item.ItemID }}</td>
-                                            <td>{{ item.ItemName }}</td>
+                                            <td class="fw-semibold">{{ item.ItemName }}</td>
                                             <td>{{ item.Category }}</td>
-                                            <td>{{ item.Quantity }}</td>
+                                            <td>
+                                                {% if item.Quantity < 10 %}
+                                                    <span class="text-danger fw-bold">{{ item.Quantity }}</span>
+                                                {% else %}
+                                                    <span class="text-success fw-semibold">{{ item.Quantity }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if item.Quantity == 0 %}
+                                                    <span class="badge bg-danger fs-5">Out of Stock</span>
+                                                {% elif item.Quantity < 10 %}
+                                                    <span class="badge bg-warning text-dark fs-5">Low Stock</span>
+                                                {% else %}
+                                                    <span class="badge bg-success fs-5">In Stock</span>
+                                                {% endif %}
+                                            </td>
                                             <td>₱ {{ item.Price|floatformat:2 }}</td>
-                                            <td class="text-truncate" style="max-width: 180px;" title="{{ item.Description }}">
+                                            <td class="text-truncate" style="max-width: 250px;" title="{{ item.Description }}">
                                                 {{ item.Description|default:"-" }}
                                             </td>
                                             <td>{{ item.DateAdded|date:"M d, Y" }}</td>
                                             <td>
-                                                <a href="{% url 'edit_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-primary me-1">
+                                                <a href="{% url 'edit_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-primary me-2 fs-5">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="{% url 'delete_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-danger"
+                                                <a href="{% url 'delete_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-danger fs-5"
                                                    onclick="return confirm('Are you sure you want to delete this item?');">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
@@ -74,7 +106,7 @@
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="8" class="text-muted py-4">
+                                            <td colspan="9" class="text-muted py-4 fs-5">
                                                 <i class="fas fa-info-circle me-2"></i>No inventory items found.
                                             </td>
                                         </tr>
@@ -82,9 +114,21 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- Summary -->
+                            <div class="summary-bar py-4 px-4 d-flex justify-content-between align-items-center fs-5">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="fas fa-boxes me-2 text-primary"></i>
+                                    Total Stock: <span class="text-dark">{{ total_stock }}</span>
+                                </span>
+                                <span class="fw-semibold text-secondary">
+                                    <i class="fas fa-coins me-2 text-success"></i>
+                                    Total Inventory Value: <span class="text-success">₱ {{ total_value|floatformat:2 }}</span>
+                                </span>
+                            </div>
+
                         </div>
                     </div>
-
                 </div>
             </main>
 
@@ -94,49 +138,64 @@
 
     {% include "partials/scripts.html" %}
 
+    <script>
+        // 🔍 Live search filter
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#inventoryTable tbody tr");
+            rows.forEach(row => {
+                let text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+
     <style>
-        /* Gradient Header */
         .bg-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
         }
 
-        /* Add Button */
         .btn-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
             color: #fff;
             border: none;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 1.2rem;
         }
         .btn-gradient-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
         }
 
-        /* Card */
         .table-card {
             border-radius: 0.75rem;
             overflow: hidden;
-            backdrop-filter: blur(5px);
         }
 
-        /* Table Styling */
         table.table thead {
             background-color: #f8f9fa;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
+
+        table.table td, table.table th {
+            padding: 1.2rem;
+        }
+
         table.table tbody tr:hover {
-            background-color: #f1f5ff;
+            background-color: #eef5ff;
             transition: background 0.2s ease;
         }
-        table.table td, table.table th {
-            vertical-align: middle;
+
+        .summary-bar {
+            background: linear-gradient(to right, #f8f9fa, #e9f5ff);
+            border-top: 1px solid #dee2e6;
         }
 
-        /* Breadcrumb */
-        .breadcrumb-item + .breadcrumb-item::before {
-            color: #6c757d;
+        body, table, input, button {
+            font-family: "Segoe UI", sans-serif;
+            font-size: 1.15rem;
         }
     </style>
-
 </body>
 </html>

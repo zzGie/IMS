@@ -3,7 +3,10 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
-from .models import UserProfile, InventoryItem   # ✅ Ensure InventoryItem exists
+from .models import UserProfile, InventoryItem
+from django.db.models import Sum, F, FloatField
+from django.db.models.functions import Coalesce
+
 
 # -------------------------------
 # ✅ Dashboard / Home
@@ -97,10 +100,46 @@ def deleteuser(request, id):
 # ✅ INVENTORY CRUD
 # -------------------------------
 
+# Dashboard showing stock summary
+def dashboard(request):
+    items = InventoryItem.objects.all()
+    total_quantity = sum(item.Quantity for item in items)
+
+    # Define thresholds
+    if total_quantity < 20:
+        stock_status = "Low Stock"
+        stock_class = "bg-gradient-danger"
+    elif total_quantity <= 100:
+        stock_status = "Moderate Stock"
+        stock_class = "bg-gradient-warning"
+    else:
+        stock_status = "High Stock"
+        stock_class = "bg-gradient-success"
+
+    context = {
+        "total_quantity": total_quantity,
+        "stock_status": stock_status,
+        "stock_class": stock_class,
+        "items": items,
+    }
+    return render(request, "dashboard.html", context)
+
+
 # Read: Display all inventory items
 def inventory_list(request):
+    # Get all inventory items
     inventory_list = InventoryItem.objects.all().order_by('-DateAdded')
-    context = {"inventory_list": inventory_list}
+
+    # Compute total stock and total inventory value
+    total_stock = sum(item.Quantity for item in inventory_list)
+    total_value = sum(item.Quantity * item.Price for item in inventory_list)
+
+    context = {
+        "inventory_list": inventory_list,
+        "total_stock": total_stock,
+        "total_value": total_value
+    }
+
     return render(request, "inventory/inventory_list.html", context)
 
 
@@ -110,7 +149,7 @@ def add_inventory_item(request):
         name = request.POST.get('ItemName')
         category = request.POST.get('Category')
         quantity = request.POST.get('Quantity') or 0
-        price = request.POST.get('Price')
+        price = request.POST.get('Price') or 0
         description = request.POST.get('Description')
 
         try:
@@ -127,7 +166,13 @@ def add_inventory_item(request):
             messages.error(request, f'❌ Error adding item: {e}')
             return redirect('add_inventory_item')
 
-    return render(request, 'inventory/add_inventory_item.html')
+    # ✅ Compute total stock value
+    items = InventoryItem.objects.all()
+    total_value = sum(item.Quantity * item.Price for item in items)
+
+    return render(request, 'inventory/add_inventory_item.html', {
+        'total_value': total_value
+    })
 
 
 # Update: Edit item
@@ -138,7 +183,7 @@ def edit_inventory_item(request, item_id):
         item.ItemName = request.POST.get('ItemName')
         item.Category = request.POST.get('Category')
         item.Quantity = request.POST.get('Quantity') or 0
-        item.Price = request.POST.get('Price')
+        item.Price = request.POST.get('Price') or 0
         item.Description = request.POST.get('Description')
         item.save()
         messages.success(request, '✏️ Item updated successfully!')
