@@ -13,28 +13,28 @@
                     <!-- Page Header -->
                     <div class="mb-4 d-flex align-items-center justify-content-between">
                         <div>
-                            <h1 class="fw-bold text-primary mb-1">
-                                <i class="fas fa-box-open me-2"></i>Add New Inventory Item
+                            <h1 class="fw-bold text-primary mb-1" style="font-size: 2rem;">
+                                <i class="fas fa-tire me-2"></i>Add New Tire Item
                             </h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0" style="font-size: 1.05rem;">
                                 <li class="breadcrumb-item">
                                     <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a href="{% url 'inventory_list' %}" class="text-decoration-none text-muted">Inventory</a>
                                 </li>
-                                <li class="breadcrumb-item active text-primary fw-semibold">Add Item</li>
+                                <li class="breadcrumb-item active text-primary fw-semibold">Add Tire</li>
                             </ol>
                         </div>
-                        <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-lg">
                             <i class="fas fa-arrow-left me-1"></i> Back
                         </a>
                     </div>
 
                     <!-- Form Card -->
                     <div class="card form-card shadow border-0">
-                        <div class="card-header bg-gradient-primary text-white fw-bold">
-                            <i class="fas fa-plus me-2"></i> Create Inventory Item
+                        <div class="card-header bg-gradient-primary text-white fw-bold" style="font-size: 1.25rem;">
+                            <i class="fas fa-plus me-2"></i> Create Tire Inventory Item
                         </div>
                         <div class="card-body p-4">
                             <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -42,21 +42,39 @@
 
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Item Name</label>
-                                        <input type="text" name="name" class="form-control form-control-lg" required>
+                                        <label class="form-label fw-semibold">Tire Name</label>
+                                        <input type="text" name="name" class="form-control form-control-lg" placeholder="e.g. Michelin Pilot Sport 4" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Quantity</label>
-                                        <input type="number" name="quantity" class="form-control form-control-lg" required min="0">
+                                        <label class="form-label fw-semibold">Tire Type</label>
+                                        <select name="category" class="form-select form-select-lg" required>
+                                            <option value="" disabled selected>Select Tire Type</option>
+                                            <option value="Motorcycle Tire">Motorcycle Tire</option>
+                                            <option value="Car Tire">Car Tire</option>
+                                            <option value="SUV Tire">SUV Tire</option>
+                                            <option value="Truck Tire">Truck Tire</option>
+                                            <option value="All-Terrain Tire">All-Terrain Tire</option>
+                                            <option value="Off-Road Tire">Off-Road Tire</option>
+                                            <option value="Performance Tire">Performance Tire</option>
+                                            <option value="Winter Tire">Winter Tire</option>
+                                            <option value="Spare Tire">Spare Tire</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Quantity</label>
+                                        <input type="number" name="quantity" class="form-control form-control-lg" required min="0">
+                                    </div>
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold">Price (₱)</label>
                                         <input type="number" name="price" class="form-control form-control-lg" step="0.01" required>
                                     </div>
-                                    <div class="col-md-6">
+                                </div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-12">
                                         <label class="form-label fw-semibold">Image (Optional)</label>
                                         <input type="file" name="image" class="form-control form-control-lg">
                                     </div>
@@ -64,14 +82,14 @@
 
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Description</label>
-                                    <textarea name="description" rows="3" class="form-control form-control-lg"></textarea>
+                                    <textarea name="description" rows="3" class="form-control form-control-lg" placeholder="e.g. Durable radial tire ideal for long-distance travel."></textarea>
                                 </div>
 
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="submit" class="btn btn-gradient-primary px-4">
-                                        <i class="fas fa-save me-2"></i> Save Item
+                                <div class="d-flex justify-content-end gap-3">
+                                    <button type="submit" class="btn btn-gradient-primary btn-lg px-5">
+                                        <i class="fas fa-save me-2"></i> Save Tire
                                     </button>
-                                    <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary px-4">
+                                    <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-lg px-5">
                                         Cancel
                                     </a>
                                 </div>
@@ -88,7 +106,7 @@
     {% include "partials/scripts.html" %}
 
     <style>
-        /* Header Gradient - Light Blue */
+        /* Header Gradient */
         .bg-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
         }
@@ -96,30 +114,42 @@
         /* Card */
         .form-card {
             backdrop-filter: blur(5px);
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 0.85rem;
+        }
+
+        /* Labels & Text */
+        label.form-label {
+            font-size: 1.1rem;
         }
 
         /* Inputs */
         .form-control-lg, .form-select-lg {
             border-radius: 0.5rem;
-            font-size: 0.95rem;
-            padding: 0.75rem;
+            font-size: 1.1rem;
+            padding: 0.9rem;
         }
         .form-control-lg:focus, .form-select-lg:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
 
-        /* Button Gradient */
+        /* Buttons */
         .btn-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
             color: white;
             border: none;
             transition: 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
         .btn-gradient-primary:hover {
             background: linear-gradient(45deg, #0062cc, #0099cc);
+        }
+
+        .btn-outline-secondary {
+            font-size: 1.1rem;
+            font-weight: 500;
         }
     </style>
 </body>

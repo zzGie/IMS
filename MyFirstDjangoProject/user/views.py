@@ -4,29 +4,58 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from .models import UserProfile, InventoryItem
-from django.db.models import Sum, F, FloatField
-from django.db.models.functions import Coalesce
+from django.db.models import Sum
 
 
-# -------------------------------
-# ✅ Dashboard / Home
-# -------------------------------
+# ==========================================================
+# ✅ DASHBOARD / HOME
+# ==========================================================
 def index(request):
-    return render(request, "user/index.html")
+    # ✅ Fetch all inventory items
+    items = InventoryItem.objects.all()
 
+    # ✅ Count active users
+    active_users = UserProfile.objects.filter(is_active=True).count()
 
-# -------------------------------
+    # ✅ Stock thresholds
+    low_stock = InventoryItem.objects.filter(Quantity__lt=10).count()       # less than 10
+    high_stock = InventoryItem.objects.filter(Quantity__gte=20).count()     # 20 or more
+
+    # ✅ Total stock quantity
+    total_quantity = sum(item.Quantity for item in items)
+
+    # ✅ Determine stock status color & label for dashboard card
+    if total_quantity < 20:
+        stock_status = "Low Stock"
+        stock_class = "bg-gradient-danger"
+    elif total_quantity <= 50:
+        stock_status = "Moderate Stock"
+        stock_class = "bg-gradient-warning"
+    else:
+        stock_status = "High Stock"
+        stock_class = "bg-gradient-success"
+
+    context = {
+        "active_users": active_users,
+        "low_stock": low_stock,
+        "high_stock": high_stock,
+        "total_quantity": total_quantity,
+        "stock_status": stock_status,
+        "stock_class": stock_class,
+        "items": items,
+    }
+
+    return render(request, "user/index.html", context)
+
+# ==========================================================
 # ✅ USER CRUD
-# -------------------------------
+# ==========================================================
 
-# Read: Display all users
 def userlist(request):
     user_list = UserProfile.objects.all()
-    context = {"user_list": user_list}
-    return render(request, "user/userlist.html", context)
+    return render(request, "user/userlist.html", {"user_list": user_list})
 
 
-# Create: Add new user
 def adduser(request):
     if request.method == "POST":
         fullname = request.POST.get("fullname")
@@ -47,7 +76,7 @@ def adduser(request):
                 address=address,
                 username=username,
                 password=make_password(password),
-                user_image=user_image
+                user_image=user_image,
             )
             user.save()
             messages.success(request, "✅ User added successfully!")
@@ -59,10 +88,8 @@ def adduser(request):
     return render(request, "user/adduser.html")
 
 
-# Update: Edit user
 def edituser(request, id):
     user = get_object_or_404(UserProfile, id=id)
-
     if request.method == "POST":
         user.fullname = request.POST.get("fullname")
         user.email = request.POST.get("email")
@@ -88,7 +115,6 @@ def edituser(request, id):
     return render(request, "user/edituser.html", {"user": user})
 
 
-# Delete: Remove user
 def deleteuser(request, id):
     user = get_object_or_404(UserProfile, id=id)
     user.delete()
@@ -96,54 +122,22 @@ def deleteuser(request, id):
     return redirect("userlist")
 
 
-# -------------------------------
+# ==========================================================
 # ✅ INVENTORY CRUD
-# -------------------------------
+# ==========================================================
 
-# Dashboard showing stock summary
-def dashboard(request):
-    items = InventoryItem.objects.all()
-    total_quantity = sum(item.Quantity for item in items)
-
-    # Define thresholds
-    if total_quantity < 20:
-        stock_status = "Low Stock"
-        stock_class = "bg-gradient-danger"
-    elif total_quantity <= 100:
-        stock_status = "Moderate Stock"
-        stock_class = "bg-gradient-warning"
-    else:
-        stock_status = "High Stock"
-        stock_class = "bg-gradient-success"
-
-    context = {
-        "total_quantity": total_quantity,
-        "stock_status": stock_status,
-        "stock_class": stock_class,
-        "items": items,
-    }
-    return render(request, "dashboard.html", context)
-
-
-# Read: Display all inventory items
 def inventory_list(request):
-    # Get all inventory items
     inventory_list = InventoryItem.objects.all().order_by('-DateAdded')
-
-    # Compute total stock and total inventory value
     total_stock = sum(item.Quantity for item in inventory_list)
     total_value = sum(item.Quantity * item.Price for item in inventory_list)
 
-    context = {
+    return render(request, "inventory/inventory_list.html", {
         "inventory_list": inventory_list,
         "total_stock": total_stock,
-        "total_value": total_value
-    }
-
-    return render(request, "inventory/inventory_list.html", context)
+        "total_value": total_value,
+    })
 
 
-# Create: Add new item
 def add_inventory_item(request):
     if request.method == 'POST':
         name = request.POST.get('ItemName')
@@ -166,16 +160,11 @@ def add_inventory_item(request):
             messages.error(request, f'❌ Error adding item: {e}')
             return redirect('add_inventory_item')
 
-    # ✅ Compute total stock value
     items = InventoryItem.objects.all()
     total_value = sum(item.Quantity * item.Price for item in items)
-
-    return render(request, 'inventory/add_inventory_item.html', {
-        'total_value': total_value
-    })
+    return render(request, 'inventory/add_inventory_item.html', {'total_value': total_value})
 
 
-# Update: Edit item
 def edit_inventory_item(request, item_id):
     item = get_object_or_404(InventoryItem, ItemID=item_id)
 
@@ -192,7 +181,6 @@ def edit_inventory_item(request, item_id):
     return render(request, 'inventory/edit_inventory_item.html', {'item': item})
 
 
-# Delete: Remove item
 def delete_inventory_item(request, item_id):
     item = get_object_or_404(InventoryItem, ItemID=item_id)
     item.delete()

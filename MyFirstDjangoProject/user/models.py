@@ -4,11 +4,12 @@ from django.utils import timezone
 from django.utils.html import mark_safe
 import os, random
 
+
 # ✅ Generate unique file path for uploaded profile images
 def image_path(instance, filename):
     basefilename, file_extension = os.path.splitext(filename)
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-    randomstr = ''.join(random.choice(chars) for x in range(10))
+    randomstr = ''.join(random.choice(chars) for _ in range(10))
     return f'profilepic/{basefilename}_{randomstr}{file_extension}'
 
 
@@ -25,12 +26,13 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     user_image = models.ImageField(
         upload_to=image_path,
-        default='profilepic/default.png',  # ✅ match folder structure, not 'profile_pic'
+        default='profilepic/default.png',  # ✅ match folder structure
         blank=True,
         null=True
     )
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=128)  # ✅ should be hashed if using Django auth
+    is_active = models.BooleanField(default=True, verbose_name="Active User")  # ✅ added for filtering
 
     def __str__(self):
         return f"{self.fullname} ({self.username})"
