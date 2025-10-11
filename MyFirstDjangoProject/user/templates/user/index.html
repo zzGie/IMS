@@ -195,7 +195,7 @@
         }, 5000);
 
         // Chart.js Setup
-        const inventoryData = {{ inventory_list|safe }};
+        const inventoryData = inventory_list|safe ;
         const sortedData = inventoryData.sort((a, b) => a.quantity - b.quantity);
         const labels = sortedData.map(item => item.name);
         const quantities = sortedData.map(item => item.quantity);
