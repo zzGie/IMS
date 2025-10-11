@@ -1,142 +1,237 @@
-{% include "partials/header.html" %} <!-- HEADER -->
+{% include "partials/header.html" %}
 
-<body class="sb-nav-fixed bg-light">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    {% include "partials/navbar.html" %} <!-- NAVBAR -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, white 20%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
+        /* Branding Section (Left Side) */
+        .brand-section {
+            position: fixed;
+            top: 50%;
+            left: 8%;
+            transform: translateY(-50%);
+            text-align: left;
+            animation: fadeInLeft 1.2s ease-in-out;
+            z-index: 5;
+        }
+
+        .brand-section h1 {
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #b5e7ff;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 195, 255, 0.8),
+                         0 0 35px rgba(0, 195, 255, 0.6);
+        }
+
+        .brand-section p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #c2ecff;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 15px rgba(0, 195, 255, 0.7);
+        }
+
+        /* Layout adjustments */
+        #layoutSidenav_content {
+            background: transparent;
+            padding-left: 40%;
+            padding-top: 1rem;
+        }
+
+        main {
+            padding: 1rem 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            margin-top: 0.2rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .bg-gradient-primary { background: linear-gradient(45deg, #007bff, #00c6ff); color: white; }
+        .bg-gradient-success { background: linear-gradient(45deg, #28a745, #00d27a); color: white; }
+        .bg-gradient-warning { background: linear-gradient(45deg, #ffc107, #ff8f00); color: white; }
+        .bg-gradient-danger  { background: linear-gradient(45deg, #dc3545, #ff4b5c); color: white; }
+
+        /* Chart Section (Centered Rectangle) */
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem 2rem;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+            width: 80%;
+            max-width: 900px;
+            height: 400px;
+            margin: 5% auto;
+            margin-right: 10%;
+            animation: fadeInUp 1s ease;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 320px !important;
+        }
+
+        .floating-message {
+            z-index: 9999;
+        }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-100px) translateY(-50%); }
+            to { opacity: 1; transform: translateX(0) translateY(-50%); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    {% include "partials/navbar.html" %}
     <div id="layoutSidenav">
-        {% include "partials/sidebar.html" %} <!-- SIDEBAR -->
-
+        {% include "partials/sidebar.html" %}
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid px-4 py-4">
+           
+                <!-- Dashboard Header -->
+                <div class="dashboard-header mb-4">
+                    <h2 class="fw-bold text-primary">📊 Dashboard</h2>
+                    <p class="text-muted mb-0">System Summary and Inventory Insights</p>
+                </div>
 
-                    <!-- Dashboard Header -->
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <div>
-                            <h1 class="fw-bold mb-1 text-primary" style="font-size: 2.3rem;">
-                                📊 Dashboard
-                            </h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0 fs-5">
-                                <li class="breadcrumb-item">
-                                    <a href="#" class="text-decoration-none text-muted">Home</a>
-                                </li>
-                                <li class="breadcrumb-item active text-primary fw-semibold">Dashboard</li>
-                            </ol>
+                <!-- Dashboard Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-gradient-primary shadow h-100 p-4">
+                            <div class="fs-5 fw-semibold">👤 Active Users</div>
+                            <h2 class="fw-bold mt-2 mb-0">{{ active_users }}</h2>
                         </div>
-                       
                     </div>
 
-              
-<!-- Dashboard Summary Cards -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-gradient-primary shadow rounded-4 card-hover h-100">
-            <div class="card-body fs-5 fw-semibold d-flex flex-column justify-content-between py-4">
-                👤 Active Users
-                <h2 class="fw-bold mt-2 mb-0">{{ active_users }}</h2>
-            </div>
-        </div>
-    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-gradient-warning shadow h-100 p-4">
+                            <div class="fs-5 fw-semibold">📦 Low Stock</div>
+                            <h2 class="fw-bold mt-2 mb-0">{{ low_stock }}</h2>
+                        </div>
+                    </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-gradient-warning shadow rounded-4 card-hover h-100">
-            <div class="card-body fs-5 fw-semibold d-flex flex-column justify-content-between py-4">
-                📦 Low Stock
-                <h2 class="fw-bold mt-2 mb-0">{{ low_stock }}</h2>
-            </div>
-        </div>
-    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-gradient-success shadow h-100 p-4">
+                            <div class="fs-5 fw-semibold">🔥 High Stock</div>
+                            <h2 class="fw-bold mt-2 mb-0">{{ high_stock }}</h2>
+                        </div>
+                    </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-gradient-success shadow rounded-4 card-hover h-100">
-            <div class="card-body fs-5 fw-semibold d-flex flex-column justify-content-between py-4">
-                🔥 High Stock
-                <h2 class="fw-bold mt-2 mb-0">{{ high_stock }}</h2>
-            </div>
-        </div>
-    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card {{ stock_class }} shadow h-100 p-4">
+                            <div class="fs-5 fw-semibold">🧮 Total Inventory</div>
+                            <h2 class="fw-bold mt-2 mb-0">{{ total_quantity }}</h2>
+                            <p class="small opacity-75">{{ stock_status }}</p>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white {{ stock_class }} shadow rounded-4 card-hover h-100">
-            <div class="card-body fs-5 fw-semibold d-flex flex-column justify-content-between py-4">
-                🧮 Total Inventory
-                <h2 class="fw-bold mt-2 mb-0">{{ total_quantity }}</h2>
-                <p class="mt-2 mb-0 small opacity-75">{{ stock_status }}</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-                  
-
-               
+                <!-- Chart Section (Centered Rectangle) -->
+                <div class="chart-container">
+                    <h5 class="text-center text-primary fw-bold mb-3">📊 Inventory Stock Levels</h5>
+                    <canvas id="stockChart"></canvas>
                 </div>
             </main>
 
-            {% include "partials/footer.html" %} <!-- FOOTER -->
+            {% include "partials/footer.html" %}
         </div>
     </div>
 
-    {% include "partials/scripts.html" %} <!-- SCRIPTS -->
+    <!-- Floating Messages -->
+    <div class="position-fixed bottom-0 end-0 p-3 floating-message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} shadow fade show rounded-3 mb-2"
+                     style="animation: slideIn 0.5s ease;" role="alert" id="alertMessage">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
-    <style>
-        /* ✅ Gradient Colors */
-        .bg-gradient-primary { background: linear-gradient(45deg, #007bff, #00c6ff); }
-        .bg-gradient-success { background: linear-gradient(45deg, #28a745, #00d27a); }
-        .bg-gradient-warning { background: linear-gradient(45deg, #ffc107, #ff8f00); }
-        .bg-gradient-danger { background: linear-gradient(45deg, #dc3545, #ff4b5c); }
+    <script>
+        // Auto-remove alert
+        setTimeout(() => {
+            const alert = document.getElementById('alertMessage');
+            if (alert) alert.remove();
+        }, 5000);
 
-        /* ✅ Button */
-        .btn-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
-            border: none;
-            color: white;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .btn-gradient-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0.75rem 1.5rem rgba(0, 123, 255, 0.25);
-        }
+        // Chart.js Setup
+        const inventoryData = {{ inventory_list|safe }};
+        const sortedData = inventoryData.sort((a, b) => a.quantity - b.quantity);
+        const labels = sortedData.map(item => item.name);
+        const quantities = sortedData.map(item => item.quantity);
 
-        /* ✅ Card Styling */
-        .card-hover {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            border-radius: 1rem;
-        }
-        .card-hover:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
-        }
+        new Chart(document.getElementById('stockChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stock Quantity',
+                    data: quantities,
+                    backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                    borderColor: '#007bff',
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#007bff', font: { size: 13, weight: '600' } } },
+                    x: { ticks: { color: '#007bff', font: { size: 12, weight: '500' } } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#007bff',
+                        titleColor: 'white',
+                        bodyColor: 'white'
+                    }
+                }
+            }
+        });
+    </script>
 
-        /* ✅ Table Styling */
-        table thead {
-            background-color: #f8f9fa;
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-        table td, table th {
-            padding: 1.2rem;
-        }
-        table tbody tr:hover {
-            background-color: #eef5ff;
-            transition: background 0.2s ease;
-        }
-
-        /* ✅ General Typography */
-        body, table, button, input {
-            font-family: "Segoe UI", sans-serif;
-            font-size: 1.15rem;
-        }
-        .breadcrumb {
-            font-size: 1.1rem;
-        }
-
-        /* ✅ Card Headers */
-        .card-header {
-            border-bottom: 2px solid #e9ecef;
-        }
-    </style>
-
+    {% include "partials/scripts.html" %}
 </body>
 </html>

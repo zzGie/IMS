@@ -1,6 +1,6 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark custom-navbar">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-4 fw-bold" href="index.html"> TAYRNAV</a>
+    <h2 class="fw-bold text-primary mb-1" style="font-size: 2.3rem;">TAYRNAV</h2>
 
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-lg order-1 order-lg-0 me-4 me-lg-0 text-white" id="sidebarToggle">
@@ -20,7 +20,9 @@
                 <li><a class="dropdown-item fs-5" href="#!">⚙️ Settings</a></li>
                 <li><a class="dropdown-item fs-5" href="#!">📜 Activity Log</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item fs-5 text-danger" href="#!">🚪 Logout</a></li>
+                <li>
+    <a class="dropdown-item fs-5 text-danger" href="{% url 'logout' %}">🚪 Logout</a>
+</li>
             </ul>
         </li>
     </ul>

@@ -13,8 +13,15 @@ def image_path(instance, filename):
     return f'profilepic/{basefilename}_{randomstr}{file_extension}'
 
 
+# =========================
 # ✅ USER PROFILE MODEL
+# =========================
 class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('regular', 'Regular User')
+    ]
+
     fullname = models.CharField(max_length=150, verbose_name="Full Name")
     email = models.EmailField(unique=True, verbose_name="Email Address")
     gender = models.CharField(
@@ -26,13 +33,16 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     user_image = models.ImageField(
         upload_to=image_path,
-        default='profilepic/default.png',  # ✅ match folder structure
+        default='profilepic/default.png',
         blank=True,
         null=True
     )
     username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=128)  # ✅ should be hashed if using Django auth
-    is_active = models.BooleanField(default=True, verbose_name="Active User")  # ✅ added for filtering
+    password = models.CharField(max_length=128)  # Password should be hashed
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='regular')
+    is_active = models.BooleanField(default=True, verbose_name="Active User")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.fullname} ({self.username})"
@@ -47,16 +57,23 @@ class UserProfile(models.Model):
         return "-"
     image_tag.short_description = 'Profile Image'
 
+    # ✅ Check if user is admin
+    def is_admin(self):
+        return self.role == 'admin'
 
+
+# =========================
 # ✅ INVENTORY ITEM MODEL
+# =========================
 class InventoryItem(models.Model):
     ItemID = models.AutoField(primary_key=True)
     ItemName = models.CharField(max_length=100)
     Category = models.CharField(max_length=50, null=True, blank=True)
     Quantity = models.IntegerField(default=0, null=True, blank=True)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
-    DateAdded = models.DateTimeField(default=timezone.now)
     Description = models.TextField(null=True, blank=True)
+    DateAdded = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.ItemName} ({self.Category if self.Category else 'No Category'})"

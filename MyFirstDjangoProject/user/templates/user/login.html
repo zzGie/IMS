@@ -1,0 +1,154 @@
+{% include "partials/header.html" %}
+
+<head>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, white 20%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Side Branding */
+        .brand-section {
+            position: absolute;
+            top: 50%;
+            left: 6%;
+            transform: translateY(-50%);
+            color: white;
+            animation: fadeInLeft 1.2s ease-in-out;
+        }
+
+        .brand-section h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-section p {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Login Card */
+        .login-card {
+            width: 400px;
+            background-color: #ffffffee;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .login-card h2 {
+            font-weight: 700;
+            color: #007BFF;
+        }
+
+        .btn-custom {
+            background: linear-gradient(to right, #00BFFF, #007BFF);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(to right, #0099ff, #0056b3);
+            transform: scale(1.05);
+        }
+
+        /* Floating Messages */
+        .floating-message {
+            z-index: 9999;
+        }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px) translateY(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) translateY(-50%);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+
+    <!-- Left Branding Section -->
+    <div class="brand-section">
+        <h1>TAYRNAV</h1>
+        <p>Tire Inventory Management System</p>
+    </div>
+
+    <!-- Login Form (Right Side) -->
+    <div class="container d-flex justify-content-end align-items-center vh-100 pe-5">
+        <div class="card login-card">
+            <h2 class="text-center mb-4">🔑 Login</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <input type="text" name="username" id="username" class="form-control rounded-3" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input type="password" name="password" id="password" class="form-control rounded-3" required>
+                </div>
+
+                <button type="submit" class="btn btn-custom w-100 rounded-3 mt-3">
+                    Login
+                </button>
+            </form>
+
+            <p class="mt-3 text-center">
+                Don’t have an account?
+                <a href="{% url 'register' %}" class="text-decoration-none text-primary fw-semibold">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Floating Message (Bottom Right) -->
+    <div class="position-fixed bottom-0 end-0 p-3 floating-message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} shadow fade show rounded-3" role="alert" id="alertMessage">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        // Automatically remove messages after 5 seconds
+        setTimeout(() => {
+            const alert = document.getElementById('alertMessage');
+            if (alert) alert.remove();
+        }, 5000);
+    </script>
+
+    {% include "partials/scripts.html" %}
+</body>
+</html>
