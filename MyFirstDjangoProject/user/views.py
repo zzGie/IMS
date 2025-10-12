@@ -4,7 +4,10 @@ from django.db import IntegrityError
 from django.contrib.auth.hashers import make_password, check_password
 from .models import UserProfile, InventoryItem
 import json
-
+from django.core import serializers
+import openpyxl
+from django.http import HttpResponse
+from django.db.models import Sum, Count
 # -------------------------
 # ✅ Custom Decorators
 # -------------------------
@@ -39,9 +42,12 @@ def login(request):
             return redirect("login")
 
         if check_password(password, user.password):
+            # ✅ Save important user info in session
             request.session['user_id'] = user.id
             request.session['username'] = user.username
+            request.session['fullname'] = user.fullname     # 👈 Added this line
             request.session['role'] = user.role
+
             messages.success(request, f"✅ Welcome, {user.fullname}!")
             return redirect("index")
         else:
@@ -49,6 +55,7 @@ def login(request):
             return redirect("login")
 
     return render(request, "user/login.html")
+
 
 def logout_view(request):
     
@@ -103,12 +110,17 @@ def register(request):
 # -------------------------
 @login_view
 def index(request):
-    items = InventoryItem.objects.all().order_by('Quantity')  # ✅ Low → High order
+    # ✅ Fetch and sort items (Low → High Quantity)
+    items = InventoryItem.objects.all().order_by('Quantity')
+
+    # ✅ Get stats
     active_users = UserProfile.objects.count()
-    low_stock = InventoryItem.objects.filter(Quantity__lt=10).count()
+    low_stock_items = InventoryItem.objects.filter(Quantity__lt=10)  # FIXED
+    low_stock = low_stock_items.count()
     high_stock = InventoryItem.objects.filter(Quantity__gte=20).count()
     total_quantity = sum(item.Quantity for item in items)
 
+    # ✅ Stock status
     if total_quantity < 20:
         stock_status = "Low Stock"
         stock_class = "bg-gradient-danger"
@@ -119,7 +131,12 @@ def index(request):
         stock_status = "High Stock"
         stock_class = "bg-gradient-success"
 
-    # ✅ Prepare chart data
+    # ✅ Low stock alert message
+    if low_stock_items.exists():
+        low_names = ", ".join([item.ItemName for item in low_stock_items])
+        messages.warning(request, f"⚠️ Low stock alert: {low_names}")
+
+    # ✅ Chart data for JavaScript
     inventory_list = [
         {"name": item.ItemName, "quantity": item.Quantity} for item in items
     ]
@@ -131,7 +148,8 @@ def index(request):
         "total_quantity": total_quantity,
         "stock_status": stock_status,
         "stock_class": stock_class,
-        "inventory_list": json.dumps(inventory_list),  # ✅ Pass as JSON string
+        "inventory_list": json.dumps(inventory_list),  # ✅ JSON-safe for JS
+        "items": items,
     }
 
     return render(request, "user/index.html", context)
@@ -139,7 +157,7 @@ def index(request):
 # ✅ User CRUD
 # -------------------------
 @login_view
-@admin_required
+
 def userlist(request):
     return render(request, "user/userlist.html", {"user_list": UserProfile.objects.all()})
 
@@ -160,7 +178,7 @@ def adduser(request):
             )
             user.save()
             messages.success(request, "✅ User added successfully!")
-            return redirect("userlist")
+            return redirect("userlist")  # 👈 Redirects to userlist after saving
         except IntegrityError:
             messages.error(request, "⚠️ Email, Contact Number, or Username already exists.")
             return redirect("adduser")
@@ -208,6 +226,13 @@ def inventory_list(request):
     return render(request, "inventory/inventory_list.html", {"inventory_list": inventory_list, "total_stock": total_stock, "total_value": total_value})
 
 @login_view
+def inventory_detail(request, item_id):
+    # Fetch the inventory item by its primary key (ItemID)
+    item = get_object_or_404(InventoryItem, ItemID=item_id)
+    return render(request, "inventory/inventory_detail.html", {"item": item})
+
+
+@login_view
 @admin_required
 def add_inventory_item(request):
     if request.method == 'POST':
@@ -227,7 +252,7 @@ def add_inventory_item(request):
     return render(request, 'inventory/add_inventory_item.html')
 
 @login_view
-@admin_required
+
 def edit_inventory_item(request, item_id):
     item = get_object_or_404(InventoryItem, ItemID=item_id)
     if request.method == 'POST':
@@ -247,3 +272,91 @@ def delete_inventory_item(request, item_id):
     get_object_or_404(InventoryItem, ItemID=item_id).delete()
     messages.success(request, '🗑️ Item deleted successfully!')
     return redirect('inventory_list')
+
+@login_view
+@admin_required
+def category_list(request):
+    categories = InventoryItem.objects.all()
+    return render(request, 'inventory/category_list.html', {'categories': categories})
+
+@login_view
+@admin_required
+def reports_dashboard(request):
+    from django.db.models import Sum, Count
+
+    total_items = InventoryItem.objects.count()
+    total_quantity = InventoryItem.objects.aggregate(Sum('Quantity'))['Quantity__sum'] or 0
+    total_value = InventoryItem.objects.aggregate(total=Sum('Price'))['total'] or 0
+
+    category_stats = (
+        InventoryItem.objects
+        .values('Category')
+        .annotate(total_items=Count('id'), total_quantity=Sum('Quantity'))
+        .order_by('Category')
+    )
+
+    context = {
+        'total_items': total_items,
+        'total_quantity': total_quantity,
+        'total_value': total_value,
+        'category_stats': category_stats,
+    }
+
+    return render(request, 'reports/reports_dashboard.html', context)
+
+
+@login_view
+@admin_required
+def reports_dashboard(request):
+    from django.db.models import Sum, Count, F
+
+    # ✅ Summary Totals
+    total_items = InventoryItem.objects.count()
+    total_quantity = InventoryItem.objects.aggregate(total_qty=Sum('Quantity'))['total_qty'] or 0
+    total_value = InventoryItem.objects.aggregate(
+        total_value=Sum(F('Quantity') * F('Price'))
+    )['total_value'] or 0
+
+    # ✅ Category Breakdown
+    category_stats = (
+        InventoryItem.objects
+        .values('Category')
+        .annotate(
+            total_items=Count('ItemID'),
+            total_quantity=Sum('Quantity'),
+            total_value=Sum(F('Quantity') * F('Price'))
+        )
+        .order_by('Category')
+    )
+
+    context = {
+        'total_items': total_items,
+        'total_quantity': total_quantity,
+        'total_value': total_value,
+        'category_stats': category_stats,
+    }
+
+    return render(request, 'reports/reports_dashboard.html', context)
+
+
+
+@login_view
+@admin_required
+def export_inventory_excel(request):
+    # Create an Excel workbook
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Inventory"
+
+    # Add header row
+    ws.append(["ItemID", "ItemName", "Quantity", "Price"])  # Adjust columns
+
+    # Add data
+    for item in InventoryItem.objects.all():
+        ws.append([item.ItemID, item.ItemName, item.Quantity, item.Price])
+
+    # Prepare response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=inventory.xlsx'
+    wb.save(response)
+    return response

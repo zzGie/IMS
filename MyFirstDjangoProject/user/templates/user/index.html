@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, white 20%);
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, rgb(215, 232, 243) 20%);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -88,7 +88,7 @@
             max-width: 900px;
             height: 400px;
             margin: 5% auto;
-            margin-right: 10%;
+            margin-right: 25%;
             animation: fadeInUp 1s ease;
         }
 
@@ -176,26 +176,27 @@
     </div>
 
     <!-- Floating Messages -->
-    <div class="position-fixed bottom-0 end-0 p-3 floating-message">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} shadow fade show rounded-3 mb-2"
-                     style="animation: slideIn 0.5s ease;" role="alert" id="alertMessage">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+    <!-- Floating Messages (Fixed - no auto hide) -->
+
+<div class="position-fixed bottom-0 end-0 p-3 floating-message">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} shadow fade show rounded-3 mb-2"
+                 style="animation: slideIn 0.5s ease; min-width: 300px;">
+                {{ message }}
+                <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
 
     <script>
-        // Auto-remove alert
-        setTimeout(() => {
-            const alert = document.getElementById('alertMessage');
-            if (alert) alert.remove();
-        }, 5000);
+        
 
         // Chart.js Setup
-        const inventoryData = inventory_list|safe ;
+        const inventoryData = {{inventory_list|safe}} ;
         const sortedData = inventoryData.sort((a, b) => a.quantity - b.quantity);
         const labels = sortedData.map(item => item.name);
         const quantities = sortedData.map(item => item.quantity);

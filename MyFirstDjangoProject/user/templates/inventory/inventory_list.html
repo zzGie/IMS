@@ -7,39 +7,39 @@
         {% include "partials/sidebar.html" %}
 
         <div id="layoutSidenav_content">
-            <main>
+            <main class="main-content">
                 <div class="container-fluid px-4 py-4">
 
                     <!-- Header -->
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                         <div>
-                            <h1 class="fw-bold text-primary mb-2" style="font-size: 2.2rem;">
+                            <h1 class="fw-bold text-primary mb-2" style="font-size: 1.8rem;">
                                 <i class="fas fa-boxes me-2"></i> Manage Inventory
                             </h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0 fs-5">
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0 fs-6">
                                 <li class="breadcrumb-item">
                                     <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
                                 </li>
                                 <li class="breadcrumb-item active text-primary fw-semibold">Inventory</li>
                             </ol>
                         </div>
-                        <a href="{% url 'add_inventory_item' %}" class="btn btn-gradient-primary shadow-sm px-4 py-3 fs-5">
+                        <a href="{% url 'add_inventory_item' %}" class="btn btn-gradient-primary shadow-sm px-3 py-2 fs-6">
                             <i class="fas fa-plus me-2"></i> Add New Item
                         </a>
                     </div>
 
                     <!-- Search & Stats -->
-                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                         <div>
-                            <input type="text" id="searchInput" class="form-control fs-5"
+                            <input type="text" id="searchInput" class="form-control fs-6"
                                    placeholder="🔍 Search items..."
-                                   style="width: 350px; padding: 0.85rem 1rem;">
+                                   style="width: 300px; padding: 0.65rem 0.9rem;">
                         </div>
-                        <div class="text-end fs-5">
-                            <span class="badge bg-gradient-primary p-3 fs-5">
+                        <div class="text-end fs-6">
+                            <span class="badge bg-gradient-primary p-2 fs-6">
                                 Total Items: {{ inventory_list|length }}
                             </span>
-                            <span class="badge bg-success p-3 fs-5">
+                            <span class="badge bg-success p-2 fs-6">
                                 Total Stock: {{ total_stock }}
                             </span>
                         </div>
@@ -47,13 +47,13 @@
 
                     <!-- Table -->
                     <div class="card shadow border-0 table-card">
-                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center fs-5 py-4 px-4">
+                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center fs-6 py-3 px-3">
                             <span><i class="fas fa-list me-2"></i> Inventory List</span>
                         </div>
 
-                        <div class="card-body p-0">
+                        <div class="card-body p-0 table-scroll">
                             <div class="table-responsive">
-                                <table id="inventoryTable" class="table table-hover align-middle text-center mb-0 fs-5">
+                                <table id="inventoryTable" class="table table-hover align-middle text-center mb-0 fs-6">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
@@ -82,11 +82,11 @@
                                             </td>
                                             <td>
                                                 {% if item.Quantity == 0 %}
-                                                    <span class="badge bg-danger fs-5">Out of Stock</span>
+                                                    <span class="badge bg-danger fs-6">Out of Stock</span>
                                                 {% elif item.Quantity < 10 %}
-                                                    <span class="badge bg-warning text-dark fs-5">Low Stock</span>
+                                                    <span class="badge bg-warning text-dark fs-6">Low Stock</span>
                                                 {% else %}
-                                                    <span class="badge bg-success fs-5">In Stock</span>
+                                                    <span class="badge bg-success fs-6">In Stock</span>
                                                 {% endif %}
                                             </td>
                                             <td>₱ {{ item.Price|floatformat:2 }}</td>
@@ -95,10 +95,13 @@
                                             </td>
                                             <td>{{ item.DateAdded|date:"M d, Y" }}</td>
                                             <td>
-                                                <a href="{% url 'edit_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-primary me-2 fs-5">
+                                                <a href="{% url 'inventory_detail' item.ItemID %}" class="btn btn-sm btn-outline-info me-1 fs-6" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'edit_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-primary me-1 fs-6">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="{% url 'delete_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-danger fs-5"
+                                                <a href="{% url 'delete_inventory_item' item.ItemID %}" class="btn btn-sm btn-outline-danger fs-6"
                                                    onclick="return confirm('Are you sure you want to delete this item?');">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
@@ -106,7 +109,7 @@
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="9" class="text-muted py-4 fs-5">
+                                            <td colspan="9" class="text-muted py-3 fs-6">
                                                 <i class="fas fa-info-circle me-2"></i>No inventory items found.
                                             </td>
                                         </tr>
@@ -116,7 +119,7 @@
                             </div>
 
                             <!-- Summary -->
-                            <div class="summary-bar py-4 px-4 d-flex justify-content-between align-items-center fs-5">
+                            <div class="summary-bar py-3 px-3 d-flex justify-content-between align-items-center fs-6">
                                 <span class="fw-semibold text-secondary">
                                     <i class="fas fa-boxes me-2 text-primary"></i>
                                     Total Stock: <span class="text-dark">{{ total_stock }}</span>
@@ -126,7 +129,6 @@
                                     Total Inventory Value: <span class="text-success">₱ {{ total_value|floatformat:2 }}</span>
                                 </span>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -144,13 +146,28 @@
             let filter = this.value.toLowerCase();
             let rows = document.querySelectorAll("#inventoryTable tbody tr");
             rows.forEach(row => {
-                let text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? "" : "none";
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
             });
         });
     </script>
 
     <style>
+        body, table, input, button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .main-content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-scroll {
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
         .bg-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
         }
@@ -160,8 +177,9 @@
             color: #fff;
             border: none;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
         }
+
         .btn-gradient-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
@@ -175,11 +193,11 @@
         table.table thead {
             background-color: #f8f9fa;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         table.table td, table.table th {
-            padding: 1.2rem;
+            padding: 0.9rem;
         }
 
         table.table tbody tr:hover {
@@ -192,9 +210,8 @@
             border-top: 1px solid #dee2e6;
         }
 
-        body, table, input, button {
-            font-family: "Segoe UI", sans-serif;
-            font-size: 1.15rem;
+        #searchInput {
+            border-radius: 0.5rem;
         }
     </style>
 </body>

@@ -1,0 +1,98 @@
+{% include "partials/header.html" %}
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="sb-nav-fixed">
+    {% include "partials/navbar.html" %}
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- Page Header -->
+                    <div class="dashboard-header mb-4">
+                        <h2 class="fw-bold text-primary">📦 Inventory Item Details</h2>
+                        <p class="text-muted mb-0">View detailed information about this inventory item</p>
+                    </div>
+
+                    <!-- Item Details Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-gradient-primary shadow h-100 p-4">
+                                <div class="fs-5 fw-semibold">Item Name</div>
+                                <h4 class="fw-bold mt-2">{{ item.ItemName }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-gradient-warning shadow h-100 p-4">
+                                <div class="fs-5 fw-semibold">Category</div>
+                                <h4 class="fw-bold mt-2">{{ item.Category|default:"-" }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-gradient-success shadow h-100 p-4">
+                                <div class="fs-5 fw-semibold">Quantity</div>
+                                <h4 class="fw-bold mt-2">{{ item.Quantity }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-gradient-danger shadow h-100 p-4">
+                                <div class="fs-5 fw-semibold">Price (₱)</div>
+                                <h4 class="fw-bold mt-2">{{ item.Price|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Card -->
+                    <div class="card shadow p-4 mb-4">
+                        <div class="fs-5 fw-semibold mb-2">Description</div>
+                        <p class="mb-0">{{ item.Description|default:"No description provided." }}</p>
+                    </div>
+
+                    <!-- Stock Status Card -->
+                    <div class="card shadow p-4 mb-4">
+                        <div class="fs-5 fw-semibold mb-2">Stock Status</div>
+                        <p class="mb-0">
+                            {% if item.Quantity == 0 %}
+                                Out of Stock
+                            {% elif item.Quantity < 10 %}
+                                Low Stock
+                            {% else %}
+                                In Stock
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Back Button -->
+                    <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-lg mt-3">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Inventory
+                    </a>
+
+                </div>
+            </main>
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, rgb(215, 232, 243) 20%); }
+        .card { border-radius: 20px; transition: all 0.3s ease; }
+        .card:hover { transform: scale(1.03); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .bg-gradient-primary { background: linear-gradient(45deg, #007bff, #00c6ff); color: white; }
+        .bg-gradient-success { background: linear-gradient(45deg, #28a745, #00d27a); color: white; }
+        .bg-gradient-warning { background: linear-gradient(45deg, #ffc107, #ff8f00); color: white; }
+        .bg-gradient-danger  { background: linear-gradient(45deg, #dc3545, #ff4b5c); color: white; }
+        .dashboard-header h2 { font-size: 2.2rem; font-weight: 700; }
+        .dashboard-header p { font-size: 1.1rem; } 
+                
+        </style>
+</body>
+</html>

@@ -1,60 +1,79 @@
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark custom-navbar">
-    <!-- Navbar Brand-->
-    <h2 class="fw-bold text-primary mb-1" style="font-size: 2.3rem;">TAYRNAV</h2>
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark custom-navbar shadow">
+    <!-- Brand -->
+    <div class="d-flex align-items-center ms-3">
+        <h2 class="fw-bold text-primary mb-0 me-2" style="font-size: 2.2rem;">TAYRNAV</h2>
+    </div>
 
-    <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-lg order-1 order-lg-0 me-4 me-lg-0 text-white" id="sidebarToggle">
+    <!-- Sidebar Toggle -->
+    <button class="btn btn-link btn-lg text-white ms-3" id="sidebarToggle">
         <i class="fas fa-bars fa-lg"></i>
     </button>
 
-    <!-- Navbar Search-->
-   
-
-    <!-- Navbar-->
-    <ul class="navbar-nav ms-auto me-4">
+    <!-- Right Section -->
+    <ul class="navbar-nav ms-auto me-4 d-flex align-items-center">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white fs-4" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user-circle fa-xl"></i>
+            <a class="nav-link dropdown-toggle text-white fw-semibold d-flex align-items-center" 
+               id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle fa-2x me-2 text-info"></i>
+                <span style="font-size: 1.2rem;">
+                    {{ request.session.fullname }}
+                </span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item fs-5" href="#!">⚙️ Settings</a></li>
-                <li><a class="dropdown-item fs-5" href="#!">📜 Activity Log</a></li>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3" aria-labelledby="navbarDropdown">
+                <li>
+                    <a class="dropdown-item fs-5" href="{% url 'admin:index' %}" target="_blank">
+                        ⚙️ Go to Admin Panel
+                    </a>
+                </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-    <a class="dropdown-item fs-5 text-danger" href="{% url 'logout' %}">🚪 Logout</a>
-</li>
+                    <a class="dropdown-item fs-5 text-danger" href="{% url 'logout' %}">
+                        🚪 Logout
+                    </a>
+                </li>
             </ul>
         </li>
     </ul>
 </nav>
 
 <style>
-    /* ✅ Custom Larger Navbar Style */
+    /* 🌙 Custom Navbar Styling */
     .custom-navbar {
-        height: 80px; /* make navbar taller */
-        font-size: 1.3rem; /* larger text */
+        height: 80px;
+        font-size: 1.2rem;
         padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #0d1b2a, #1b263b, #007bff);
+        border-bottom: 2px solid #00c6ff;
     }
 
-    .custom-navbar .navbar-brand {
-        font-size: 1.8rem;
+    .custom-navbar h2 {
         letter-spacing: 1px;
     }
 
-    .custom-navbar .form-control-lg {
-        font-size: 1.1rem;
-        height: 50px;
-    }
-
-    .custom-navbar .btn-lg {
-        padding: 0.5rem 1rem;
-    }
-
     .custom-navbar .nav-link {
-        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .custom-navbar .nav-link:hover {
+        color: #00c6ff !important;
+        transform: scale(1.05);
+    }
+
+    .dropdown-menu {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 0.5rem;
     }
 
     .dropdown-menu a.dropdown-item {
-        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-menu a.dropdown-item:hover {
+        background-color: #f1f5ff;
+        transform: translateX(4px);
     }
 </style>

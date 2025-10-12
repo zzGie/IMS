@@ -1,6 +1,10 @@
 {% include "partials/header.html" %}
 
-<body class="sb-nav-fixed bg-light">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="sb-nav-fixed">
 
     {% include "partials/navbar.html" %}
     <div id="layoutSidenav">
@@ -9,35 +13,35 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4 py-4">
-                    
+
+                    <!-- Branding Left Side -->
+                    <div class="brand-section">
+                        <h1>USER</h1>
+                        <p>Add New</p>
+                    </div>
+
                     <!-- Page Header -->
-                    <div class="mb-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <h1 class="fw-bold text-primary mb-1"><i class="fas fa-user-plus me-2"></i>Add New User</h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
-                                <li class="breadcrumb-item">
-                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
-                                </li>
-                                <li class="breadcrumb-item">
-                                    <a href="{% url 'userlist' %}" class="text-decoration-none text-muted">Users</a>
-                                </li>
-                                <li class="breadcrumb-item active text-primary fw-semibold">Add User</li>
-                            </ol>
-                        </div>
-                        <a href="{% url 'userlist' %}" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i> Back
-                        </a>
+                    <div class="dashboard-header mb-4">
+                        <h2 class="fw-bold text-primary"><i class="fas fa-user-plus me-2"></i>Add New User</h2>
+                        <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'userlist' %}" class="text-decoration-none text-muted">Users</a>
+                            </li>
+                            <li class="breadcrumb-item active text-primary fw-semibold">Add User</li>
+                        </ol>
                     </div>
 
                     <!-- Form Card -->
-                    <div class="card form-card shadow border-0">
+                    <div class="card form-card shadow p-4 mb-4">
                         <div class="card-header bg-gradient-primary text-white fw-bold">
                             <i class="fas fa-user me-2"></i> Create User
                         </div>
                         <div class="card-body p-4">
                             <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                                 {% csrf_token %}
-
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Full Name</label>
@@ -99,6 +103,7 @@
 
                 </div>
             </main>
+
             {% include "partials/footer.html" %}
         </div>
     </div>
@@ -106,24 +111,53 @@
     {% include "partials/scripts.html" %}
 
     <style>
-        /* Header Gradient - Light Blue */
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, rgb(215, 232, 243) 20%);
+            min-height: 100vh;
         }
 
-        /* Card */
+        /* Branding Section */
+        .brand-section {
+            position: fixed;
+            top: 50%;
+            left: 20%;
+            transform: translateY(-50%);
+            text-align: left;
+            animation: fadeInLeft 1.2s ease-in-out;
+            z-index: 5;
+        }
+
+        .brand-section h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #b5e7ff;
+            text-shadow: 0 0 20px rgba(0, 195, 255, 0.8),
+                         0 0 35px rgba(0, 195, 255, 0.6);
+        }
+
+        .brand-section p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #c2ecff;
+            text-shadow: 0 0 15px rgba(0, 195, 255, 0.7);
+        }
+
+        /* Form Card */
         .form-card {
             backdrop-filter: blur(5px);
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 0.75rem;
+             background: rgba(188, 210, 235, 0.9);;
+            border-radius: 20px;
+            margin-left: 35%;
         }
 
         /* Input Focus */
         .form-control-lg, .form-select-lg {
             border-radius: 0.5rem;
-            font-size: 0.95rem;
+            font-size: 1rem;
             padding: 0.75rem;
         }
+
         .form-control-lg:focus, .form-select-lg:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
@@ -134,11 +168,20 @@
             background: linear-gradient(45deg, #007bff, #00c6ff);
             color: white;
             border: none;
-            transition: 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .btn-gradient-primary:hover {
-            background: linear-gradient(45deg, #0062cc, #0099cc);
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-100px) translateY(-50%); }
+            to { opacity: 1; transform: translateX(0) translateY(-50%); }
         }
     </style>
+
 </body>
 </html>

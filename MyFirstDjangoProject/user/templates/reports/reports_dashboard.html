@@ -1,0 +1,112 @@
+{% include "partials/header.html" %}
+
+<body class="sb-nav-fixed bg-light">
+
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main class="main-content">
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- Page Header -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <h1 class="fw-bold text-primary mb-1">
+                            <i class="fas fa-chart-pie me-2"></i> Reports Dashboard
+                        </h1>
+
+                         <!-- Export Button -->
+    <a href="{% url 'export_inventory_excel' %}" class="btn btn-success mb-3">
+        <i class="fas fa-file-excel me-2"></i> Export to Excel
+    </a>
+                    </div>
+
+                    <!-- Summary Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white shadow rounded-3 p-3">
+                                <h5>Total Items</h5>
+                                <h3>{{ total_items }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white shadow rounded-3 p-3">
+                                <h5>Total Quantity</h5>
+                                <h3>{{ total_quantity }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white shadow rounded-3 p-3">
+                                <h5>Total Inventory Value</h5>
+                                <h3>₱{{ total_value|floatformat:2 }}</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Summary Table -->
+                    <div class="card shadow border-0 rounded-4 overflow-hidden glass-card">
+                        <div class="card-header bg-gradient-primary text-white fw-semibold fs-6 py-3 px-3">
+                            <i class="fas fa-boxes me-2"></i> Category Summary
+                        </div>
+                        <div class="card-body p-0 table-scroll">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle text-center mb-0 fs-6">
+                                    <thead class="table-light sticky-header">
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Total Items</th>
+                                            <th>Total Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cat in category_stats %}
+                                        <tr>
+                                            <td>{{ cat.Category|default:"No Category" }}</td>
+                                            <td>{{ cat.total_items }}</td>
+                                            <td>{{ cat.total_quantity }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                <i class="fas fa-info-circle me-2"></i>No data available.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <style>
+        /* Reuse existing dashboard styles */
+        .table-scroll {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .sticky-header th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            z-index: 2;
+        }
+        .glass-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+    </style>
+
+</body>
+</html>

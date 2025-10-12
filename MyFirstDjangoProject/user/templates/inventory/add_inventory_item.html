@@ -1,6 +1,10 @@
 {% include "partials/header.html" %}
 
-<body class="sb-nav-fixed bg-light">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="sb-nav-fixed">
 
     {% include "partials/navbar.html" %}
     <div id="layoutSidenav">
@@ -9,31 +13,27 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4 py-4">
-                    
+
+                    <!-- Branding Left Side -->
+                    <div class="brand-section">
+                        <h1>TIRE</h1>
+                        <p>Add New</p>
+                    </div>
+
                     <!-- Page Header -->
-                    <div class="mb-4 d-flex align-items-center justify-content-between">
+                    <div class="dashboard-header mb-4 d-flex align-items-center justify-content-between">
                         <div>
-                            <h1 class="fw-bold text-primary mb-1" style="font-size: 2rem;">
+                            <h2 class="fw-bold text-primary">
                                 <i class="fas fa-tire me-2"></i>Add New Tire Item
-                            </h1>
-                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0" style="font-size: 1.05rem;">
-                                <li class="breadcrumb-item">
-                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
-                                </li>
-                                <li class="breadcrumb-item">
-                                    <a href="{% url 'inventory_list' %}" class="text-decoration-none text-muted">Inventory</a>
-                                </li>
-                                <li class="breadcrumb-item active text-primary fw-semibold">Add Tire</li>
-                            </ol>
+                            </h2>
+                            <p class="text-muted mb-0">Fill in the form to create a new tire inventory item</p>
                         </div>
-                        <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-arrow-left me-1"></i> Back
-                        </a>
+                       
                     </div>
 
                     <!-- Form Card -->
-                    <div class="card form-card shadow border-0">
-                        <div class="card-header bg-gradient-primary text-white fw-bold" style="font-size: 1.25rem;">
+                    <div class="card form-card shadow mb-4 p-4">
+                        <div class="card-header bg-gradient-primary text-white fw-bold">
                             <i class="fas fa-plus me-2"></i> Create Tire Inventory Item
                         </div>
                         <div class="card-body p-4">
@@ -43,11 +43,12 @@
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Tire Name</label>
-                                        <input type="text" name="name" class="form-control form-control-lg" placeholder="e.g. Michelin Pilot Sport 4" required>
+                                        <input type="text" name="ItemName" class="form-control form-control-lg"
+                                               placeholder="e.g. Michelin Pilot Sport 4" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Tire Type</label>
-                                        <select name="category" class="form-select form-select-lg" required>
+                                        <select name="Category" class="form-select form-select-lg" required>
                                             <option value="" disabled selected>Select Tire Type</option>
                                             <option value="Motorcycle Tire">Motorcycle Tire</option>
                                             <option value="Car Tire">Car Tire</option>
@@ -65,24 +66,20 @@
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Quantity</label>
-                                        <input type="number" name="quantity" class="form-control form-control-lg" required min="0">
+                                        <input type="number" name="Quantity" class="form-control form-control-lg" required min="0">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Price (₱)</label>
-                                        <input type="number" name="price" class="form-control form-control-lg" step="0.01" required>
+                                        <input type="number" name="Price" class="form-control form-control-lg" step="0.01" required>
                                     </div>
                                 </div>
 
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-semibold">Image (Optional)</label>
-                                        <input type="file" name="image" class="form-control form-control-lg">
-                                    </div>
-                                </div>
+                             
 
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Description</label>
-                                    <textarea name="description" rows="3" class="form-control form-control-lg" placeholder="e.g. Durable radial tire ideal for long-distance travel."></textarea>
+                                    <textarea name="Description" rows="3" class="form-control form-control-lg"
+                                              placeholder="e.g. Durable radial tire ideal for long-distance travel."></textarea>
                                 </div>
 
                                 <div class="d-flex justify-content-end gap-3">
@@ -99,6 +96,7 @@
 
                 </div>
             </main>
+
             {% include "partials/footer.html" %}
         </div>
     </div>
@@ -106,24 +104,63 @@
     {% include "partials/scripts.html" %}
 
     <style>
-        /* Header Gradient */
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, rgb(215, 232, 243) 20%);
+            min-height: 100vh;
         }
 
-        /* Card */
+        /* Branding Section */
+        .brand-section {
+            position: fixed;
+            top: 50%;
+            left: 20%;
+            transform: translateY(-50%);
+            text-align: left;
+            animation: fadeInLeft 1.2s ease-in-out;
+            z-index: 5;
+        }
+
+        .brand-section h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #b5e7ff;
+            text-shadow: 0 0 20px rgba(0, 195, 255, 0.8),
+                         0 0 35px rgba(0, 195, 255, 0.6);
+        }
+
+        .brand-section p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #c2ecff;
+            text-shadow: 0 0 15px rgba(0, 195, 255, 0.7);
+        }
+
+        /* Form Card */
         .form-card {
             backdrop-filter: blur(5px);
-            background: rgba(255, 255, 255, 0.97);
-            border-radius: 0.85rem;
+            background: rgba(188, 210, 235, 0.9);
+            border-radius: 20px;
+            margin-left: 35%;
+            transition: all 0.3s ease;
+        }
+        .form-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* Labels & Text */
+        /* Card Header Gradient */
+        .card-header.bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: rgb(241, 204, 204);
+            font-size: 1.25rem;
+        }
+
         label.form-label {
             font-size: 1.1rem;
+            font-weight: 600;
         }
 
-        /* Inputs */
         .form-control-lg, .form-select-lg {
             border-radius: 0.5rem;
             font-size: 1.1rem;
@@ -131,27 +168,33 @@
         }
         .form-control-lg:focus, .form-select-lg:focus {
             border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
         }
 
-        /* Buttons */
         .btn-gradient-primary {
             background: linear-gradient(45deg, #007bff, #00c6ff);
             color: white;
             border: none;
-            transition: 0.3s ease;
             font-size: 1.1rem;
             font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .btn-gradient-primary:hover {
-            background: linear-gradient(45deg, #0062cc, #0099cc);
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
         }
 
         .btn-outline-secondary {
             font-size: 1.1rem;
             font-weight: 500;
         }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-100px) translateY(-50%); }
+            to { opacity: 1; transform: translateX(0) translateY(-50%); }
+        }
     </style>
+
 </body>
 </html>
-    

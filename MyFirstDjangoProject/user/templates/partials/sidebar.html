@@ -1,62 +1,85 @@
 <div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion" 
-         style="font-size: 18px; letter-spacing: 0.5px;">
+    <nav class="sb-sidenav accordion sb-sidenav-dark shadow-sm" id="sidenavAccordion"
+         style="font-size: 17px; letter-spacing: 0.5px; background: linear-gradient(180deg, #1f2937, #111827);">
         <div class="sb-sidenav-menu">
-            <div class="nav">
+            <div class="nav py-3">
 
                 <!-- Core Section -->
-                <div class="sb-sidenav-menu-heading" style="font-size: 16px; text-transform: uppercase; margin-top: 10px;">
-                    Core
+                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-2 mb-1" 
+                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+                    
                 </div>
-                <a class="nav-link" href="{% url 'index' %}" style="padding: 14px 20px;">
-                    <div class="sb-nav-link-icon">
-                        <i class="fas fa-tachometer-alt" style="font-size: 20px; margin-right: 10px;"></i>
-                    </div>
-                    <span style="font-size: 18px;">Dashboard</span>
+                <a class="nav-link text-light d-flex align-items-center" href="{% url 'index' %}"
+                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+                    <i class="fas fa-tachometer-alt me-3" style="font-size: 20px; color: #00c6ff;"></i>
+                    <span style="font-size: 17px;">Dashboard</span>
                 </a>
 
                 <!-- Main Section -->
-                <div class="sb-sidenav-menu-heading" style="font-size: 16px; text-transform: uppercase; margin-top: 10px;">
-                    Main
+                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+                    Users
                 </div>
-                <a class="nav-link" href="{% url 'adduser' %}" style="padding: 14px 20px;">
-                    <div class="sb-nav-link-icon">
-                        <i class="fas fa-edit" style="font-size: 20px; margin-right: 10px;"></i>
-                    </div>
-                    <span style="font-size: 18px;">Add User</span>
-                </a>
+                
 
-                <a class="nav-link" href="{% url 'userlist' %}" style="padding: 14px 20px;">
-                    <div class="sb-nav-link-icon">
-                        <i class="fas fa-user" style="font-size: 20px; margin-right: 10px;"></i>
-                    </div>
-                    <span style="font-size: 18px;">User Lists</span>
+                <a class="nav-link text-light d-flex align-items-center" href="{% url 'userlist' %}"
+                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+                    <i class="fas fa-users me-3" style="font-size: 20px; color: #00c6ff;"></i>
+                    <span style="font-size: 17px;">User List</span>
                 </a>
 
                 <!-- Inventory Management Section -->
-                <div class="sb-sidenav-menu-heading" style="font-size: 16px; text-transform: uppercase; margin-top: 10px;">
+                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
                     Inventory
                 </div>
-                <a class="nav-link" href="{% url 'add_inventory_item' %}" style="padding: 14px 20px;">
-                    <div class="sb-nav-link-icon">
-                        <i class="fas fa-plus-circle" style="font-size: 20px; margin-right: 10px;"></i>
-                    </div>
-                    <span style="font-size: 18px;">Add Item</span>
+                <a class="nav-link text-light d-flex align-items-center" href="{% url 'add_inventory_item' %}"
+                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+                    <i class="fas fa-plus-circle me-3" style="font-size: 20px; color: #00c6ff;"></i>
+                    <span style="font-size: 17px;">Add Item</span>
                 </a>
 
-                <a class="nav-link" href="{% url 'inventory_list' %}" style="padding: 14px 20px;">
-                    <div class="sb-nav-link-icon">
-                        <i class="fas fa-boxes" style="font-size: 20px; margin-right: 10px;"></i>
-                    </div>
-                    <span style="font-size: 18px;">Inventory List</span>
+                <a class="nav-link text-light d-flex align-items-center" href="{% url 'inventory_list' %}"
+                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+                    <i class="fas fa-boxes me-3" style="font-size: 20px; color: #00c6ff;"></i>
+                    <span style="font-size: 17px;">Inventory List</span>
                 </a>
+                 <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+             style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+         Reports
+        </div>
+
+        <a class="nav-link text-light d-flex align-items-center" href="{% url 'reports_dashboard' %}"
+    tyle="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-chart-line me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">View Reports</span>
+</a>
+
+
 
             </div>
         </div>
 
-        <div class="sb-sidenav-footer" style="font-size: 16px; padding: 15px;">
-            <div class="small">Logged in as:</div>
-            <strong>Start Bootstrap</strong>
+        <!-- Footer -->
+        <div class="sb-sidenav-footer text-center text-light py-3" 
+             style="font-size: 15px; background-color: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255,255,255,0.1);">
+            <div class="small opacity-75">Logged in as:</div>
+            <strong>IMS</strong>
         </div>
     </nav>
 </div>
+
+<!-- Extra styling -->
+<style>
+    .sb-sidenav .nav-link:hover {
+        background: rgba(0, 198, 255, 0.15);
+        transform: translateX(3px);
+        color: #00c6ff !important;
+    }
+
+    .sb-sidenav .nav-link.active {
+        background: rgba(0, 198, 255, 0.25);
+        border-left: 4px solid #00c6ff;
+        font-weight: bold;
+    }
+</style>

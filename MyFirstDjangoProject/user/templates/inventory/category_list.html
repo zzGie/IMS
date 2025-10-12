@@ -1,0 +1,41 @@
+{% include "partials/header.html" %}
+{% include "partials/navbar.html" %}
+
+<div id="layoutSidenav">
+    {% include "partials/sidebar.html" %}
+    <div id="layoutSidenav_content">
+        <main class="container-fluid px-4 py-4">
+            <h2 class="fw-bold text-primary mb-3">📦 Category List</h2>
+            
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Date Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                                <tr>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.description }}</td>
+                                    <td>{{ category.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                    
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted">No categories found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

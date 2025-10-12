@@ -1,32 +1,77 @@
 {% include "partials/header.html" %}
-<body class="sb-nav-fixed bg-light">
 
-{% include "partials/navbar.html" %}
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
 
-<div id="layoutSidenav">
-    {% include "partials/sidebar.html" %}
+<body class="sb-nav-fixed">
+    {% include "partials/navbar.html" %}
 
-    <div id="layoutSidenav_content">
-        <main>
-            <div class="container-fluid px-4 py-4">
-                <h1 class="fw-bold text-danger mb-4">🗑️ Delete Inventory Item</h1>
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
 
-                <div class="card shadow border-0">
-                    <div class="card-body bg-white text-center">
-                        <p>Are you sure you want to delete <strong>{{ item.ItemName }}</strong>?</p>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- Page Header -->
+                    <div class="dashboard-header mb-4">
+                        <h2 class="fw-bold text-danger">🗑️ Delete Inventory Item</h2>
+                        <p class="text-muted mb-0">Confirm deletion of this inventory item</p>
+                    </div>
+
+                    <!-- Delete Confirmation Card -->
+                    <div class="card shadow form-card text-center p-4">
+                        <p class="mb-4">Are you sure you want to delete <strong>{{ item.ItemName }}</strong>?</p>
                         <form method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                            <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-gradient-danger btn-lg px-4 me-2">
+                                <i class="fas fa-trash me-1"></i> Yes, Delete
+                            </button>
+                            <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary btn-lg px-4">
+                                Cancel
+                            </a>
                         </form>
                     </div>
-                </div>
-            </div>
-        </main>
-        {% include "partials/footer.html" %}
-    </div>
-</div>
 
-{% include "partials/scripts.html" %}
+                </div>
+            </main>
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, skyblue 50%, #007BFF 30%, white 20%);
+        }
+
+        .dashboard-header h2 { font-size: 2.2rem; font-weight: 700; }
+        .dashboard-header p { font-size: 1.1rem; }
+
+        .form-card {
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .form-card:hover { transform: scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
+        .btn-gradient-danger {
+            background: linear-gradient(45deg, #dc3545, #ff4b5c);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: 0.3s ease;
+        }
+        .btn-gradient-danger:hover {
+            background: linear-gradient(45deg, #c82333, #ff1f3c);
+        }
+
+        .btn-outline-secondary { font-size: 1.1rem; font-weight: 500; }
+    </style>
 </body>
 </html>
