@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, InventoryItem
+from .models import UserProfile, InventoryItem, Category
 
 # -----------------------------
 # Customize Django Admin Headers
@@ -49,3 +49,10 @@ class InventoryItemAdmin(admin.ModelAdmin):
     )
     
     readonly_fields = ('DateAdded',)
+
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'category_name', 'description', 'created_at', 'updated_at']
+
+

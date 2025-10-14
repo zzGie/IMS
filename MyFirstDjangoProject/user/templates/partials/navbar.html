@@ -11,13 +11,43 @@
 
     <!-- Right Section -->
     <ul class="navbar-nav ms-auto me-4 d-flex align-items-center">
+
+        <!-- Notification Bell -->
+        <li class="nav-item dropdown me-3">
+            <a class="nav-link position-relative text-white" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell fa-2x"></i>
+                {% if messages %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ messages|length }}
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                {% endif %}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 p-2" aria-labelledby="notificationDropdown" style="min-width: 280px;">
+                {% if messages %}
+                    {% for message in messages %}
+                        <li>
+                            <div class="alert alert-{{ message.tags }} mb-2 rounded-2 p-2 d-flex justify-content-between align-items-center">
+                                <span class="fs-6">{{ message }}</span>
+                                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>
+                        <div class="text-center text-muted fs-6 py-2">No notifications</div>
+                    </li>
+                {% endif %}
+            </ul>
+        </li>
+
+        <!-- User Dropdown -->
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white fw-semibold d-flex align-items-center" 
                id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-user-circle fa-2x me-2 text-info"></i>
-                <span style="font-size: 1.2rem;">
-                    {{ request.session.fullname }}
-                </span>
+                <span style="font-size: 1.2rem;">{{ request.session.fullname }}</span>
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3" aria-labelledby="navbarDropdown">
@@ -38,17 +68,12 @@
 </nav>
 
 <style>
-    /* 🌙 Custom Navbar Styling */
     .custom-navbar {
         height: 80px;
         font-size: 1.2rem;
         padding: 0.5rem 1rem;
         background: linear-gradient(135deg, #0d1b2a, #1b263b, #007bff);
         border-bottom: 2px solid #00c6ff;
-    }
-
-    .custom-navbar h2 {
-        letter-spacing: 1px;
     }
 
     .custom-navbar .nav-link {
@@ -61,19 +86,32 @@
         transform: scale(1.05);
     }
 
+    .badge {
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+
     .dropdown-menu {
         background-color: #ffffff;
         border-radius: 12px;
         padding: 0.5rem;
     }
 
-    .dropdown-menu a.dropdown-item {
-        border-radius: 10px;
-        transition: all 0.2s ease;
-    }
-
-    .dropdown-menu a.dropdown-item:hover {
-        background-color: #f1f5ff;
-        transform: translateX(4px);
+    .alert {
+        margin-bottom: 0;
+        font-size: 0.875rem;
     }
 </style>
+
+<script>
+    // Auto-hide messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', () => {
+        const alerts = document.querySelectorAll('.dropdown-menu .alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500);
+            }, 3000);
+        });
+    });
+</script>

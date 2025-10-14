@@ -7,7 +7,6 @@ urlpatterns = [
 
     # 🏠 Dashboard / Index
     path('index/', views.index, name='index'),
-    
 
     # 👤 User CRUD
     path('userlist/', views.userlist, name='userlist'),
@@ -21,16 +20,19 @@ urlpatterns = [
     path('inventory/<int:item_id>/', views.inventory_detail, name='inventory_detail'),
     path('inventory/edit/<int:item_id>/', views.edit_inventory_item, name='edit_inventory_item'),
     path('inventory/delete/<int:item_id>/', views.delete_inventory_item, name='delete_inventory_item'),
-    
 
+      path('categories/', views.category_list, name='category_list'),
+      path('categories/add/', views.add_category, name='add_category'),
+      path('categories/edit/<int:category_id>/', views.edit_category, name='edit_category'),
+      path('categories/delete/<int:category_id>/', views.delete_category, name='delete_category'),
+
+
+    # 📊 Reports
     path('reports/', views.reports_dashboard, name='reports_dashboard'),
     path('export_inventory_excel/', views.export_inventory_excel, name='export_inventory_excel'),
-
 
     # 🔐 Authentication
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout_view, name='logout'),
-   
-
 ]

@@ -4,61 +4,70 @@
         <div class="sb-sidenav-menu">
             <div class="nav py-3">
 
-                <!-- Core Section -->
-                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-2 mb-1" 
-                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
-                    
-                </div>
-                <a class="nav-link text-light d-flex align-items-center" href="{% url 'index' %}"
-                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
-                    <i class="fas fa-tachometer-alt me-3" style="font-size: 20px; color: #00c6ff;"></i>
-                    <span style="font-size: 17px;">Dashboard</span>
-                </a>
+            <!-- Core Section -->
+<div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-2 mb-1" 
+     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+</div>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'index' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-tachometer-alt me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">Dashboard</span>
+</a>
 
-                <!-- Main Section -->
-                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
-                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
-                    Users
-                </div>
-                
+<!-- Users Section -->
+<div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+    Users
+</div>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'userlist' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-users me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">User List</span>
+</a>
 
-                <a class="nav-link text-light d-flex align-items-center" href="{% url 'userlist' %}"
-                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
-                    <i class="fas fa-users me-3" style="font-size: 20px; color: #00c6ff;"></i>
-                    <span style="font-size: 17px;">User List</span>
-                </a>
+<!-- Inventory Management Section -->
+<div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+    Inventory
+</div>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'add_inventory_item' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-plus-circle me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">Add Item</span>
+</a>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'inventory_list' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-boxes me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">Inventory List</span>
+</a>
 
-                <!-- Inventory Management Section -->
-                <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
-                     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
-                    Inventory
-                </div>
-                <a class="nav-link text-light d-flex align-items-center" href="{% url 'add_inventory_item' %}"
-                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
-                    <i class="fas fa-plus-circle me-3" style="font-size: 20px; color: #00c6ff;"></i>
-                    <span style="font-size: 17px;">Add Item</span>
-                </a>
+<!-- Categories Section -->
+<div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+    Categories
+</div>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'add_category' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-plus-circle me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">Add Category</span>
+</a>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'category_list' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+    <i class="fas fa-tags me-3" style="font-size: 20px; color: #00c6ff;"></i>
+    <span style="font-size: 17px;">Category List</span>
+</a>
 
-                <a class="nav-link text-light d-flex align-items-center" href="{% url 'inventory_list' %}"
-                   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
-                    <i class="fas fa-boxes me-3" style="font-size: 20px; color: #00c6ff;"></i>
-                    <span style="font-size: 17px;">Inventory List</span>
-                </a>
-                 <div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
-             style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
-         Reports
-        </div>
-
-        <a class="nav-link text-light d-flex align-items-center" href="{% url 'reports_dashboard' %}"
-    tyle="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
+<!-- Reports Section -->
+<div class="sb-sidenav-menu-heading text-uppercase fw-bold text-light mt-3 mb-1"
+     style="font-size: 15px; opacity: 0.8; letter-spacing: 1px;">
+    Reports
+</div>
+<a class="nav-link text-light d-flex align-items-center" href="{% url 'reports_dashboard' %}"
+   style="padding: 14px 20px; border-radius: 8px; transition: 0.3s;">
     <i class="fas fa-chart-line me-3" style="font-size: 20px; color: #00c6ff;"></i>
     <span style="font-size: 17px;">View Reports</span>
 </a>
 
-
-
-            </div>
-        </div>
 
         <!-- Footer -->
         <div class="sb-sidenav-footer text-center text-light py-3" 

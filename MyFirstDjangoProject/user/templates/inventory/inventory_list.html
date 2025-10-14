@@ -72,7 +72,16 @@
                                         <tr>
                                             <td>{{ item.ItemID }}</td>
                                             <td class="fw-semibold">{{ item.ItemName }}</td>
-                                            <td>{{ item.Category }}</td>
+                                            
+                                            <!-- Fixed Category Display -->
+                                            <td>
+                                                {% if item.Category %}
+                                                    {{ item.Category.name }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </td>
+
                                             <td>
                                                 {% if item.Quantity < 10 %}
                                                     <span class="text-danger fw-bold">{{ item.Quantity }}</span>
@@ -142,77 +151,30 @@
 
     <script>
         // 🔍 Live search filter
-        document.getElementById("searchInput").addEventListener("keyup", function () {
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
             let rows = document.querySelectorAll("#inventoryTable tbody tr");
             rows.forEach(row => {
+                if (!row.querySelector("td")) return;
                 row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
             });
         });
     </script>
 
     <style>
-        body, table, input, button {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-        }
-
-        .main-content {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .table-scroll {
-            max-height: 65vh;
-            overflow-y: auto;
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
-            color: #fff;
-            border: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            font-size: 0.95rem;
-        }
-
-        .btn-gradient-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
-        }
-
-        .table-card {
-            border-radius: 0.75rem;
-            overflow: hidden;
-        }
-
-        table.table thead {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        table.table td, table.table th {
-            padding: 0.9rem;
-        }
-
-        table.table tbody tr:hover {
-            background-color: #eef5ff;
-            transition: background 0.2s ease;
-        }
-
-        .summary-bar {
-            background: linear-gradient(to right, #f8f9fa, #e9f5ff);
-            border-top: 1px solid #dee2e6;
-        }
-
-        #searchInput {
-            border-radius: 0.5rem;
-        }
+        body, table, input, button { font-family: 'Poppins', sans-serif; font-size: 0.95rem; }
+        .main-content { min-height: 100vh; display: flex; flex-direction: column; }
+        .table-scroll { max-height: 65vh; overflow-y: auto; }
+        .bg-gradient-primary { background: linear-gradient(45deg, #007bff, #00c6ff); }
+        .btn-gradient-primary { background: linear-gradient(45deg, #007bff, #00c6ff); color: #fff; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease; font-size: 0.95rem; }
+        .btn-gradient-primary:hover { transform: translateY(-2px); box-shadow: 0 0.5rem 1rem rgba(0,123,255,0.3); }
+        .table-card { border-radius: 0.75rem; overflow: hidden; }
+        table.table thead { background-color: #f8f9fa; font-weight: 700; font-size: 0.95rem; }
+        table.table td, table.table th { padding: 0.9rem; }
+        table.table tbody tr:hover { background-color: #eef5ff; transition: background 0.2s ease; }
+        .summary-bar { background: linear-gradient(to right, #f8f9fa, #e9f5ff); border-top: 1px solid #dee2e6; }
+        #searchInput { border-radius: 0.5rem; }
     </style>
 </body>
 </html>

@@ -1,0 +1,172 @@
+{% include "partials/header.html" %}
+
+<body class="sb-nav-fixed bg-light">
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main class="main-content">
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- Page Header -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <div>
+                            <h1 class="fw-bold text-primary mb-2" style="font-size: 1.8rem;">
+                                <i class="fas fa-tags me-2"></i> Manage Categories
+                            </h1>
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0 fs-6">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item active text-primary fw-semibold">Categories</li>
+                            </ol>
+                        </div>
+                        <a href="{% url 'add_category' %}" class="btn btn-gradient-primary shadow-sm px-3 py-2 fs-6">
+                            <i class="fas fa-plus me-2"></i> Add New Category
+                        </a>
+                    </div>
+
+                    <!-- Search & Stats -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <input type="text" id="searchInput" class="form-control fs-6"
+                                   placeholder="🔍 Search categories..."
+                                   style="width: 300px; padding: 0.65rem 0.9rem;">
+                        </div>
+                        <div class="text-end fs-6">
+                            <span class="badge bg-gradient-primary p-2 fs-6">
+                                Total Categories: {{ category_list|length }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="card shadow border-0 table-card">
+                        <div class="card-header bg-gradient-primary text-white fw-bold d-flex justify-content-between align-items-center fs-6 py-3 px-3">
+                            <span><i class="fas fa-list me-2"></i> Category List</span>
+                        </div>
+
+                        <div class="card-body p-0 table-scroll">
+                            <div class="table-responsive">
+                                <table id="categoryTable" class="table table-hover align-middle text-center mb-0 fs-6">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Category Name</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for category in category_list %}
+                                        <tr>
+                                            <td>{{ category.id }}</td>
+                                            <td class="fw-semibold">{{ category.name }}</td>
+                                            <td class="text-truncate" style="max-width: 250px;" title="{{ category.description }}">
+                                                {{ category.description|default:"-" }}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'edit_category' category.id %}" class="btn btn-sm btn-outline-primary me-1 fs-6">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'delete_category' category.id %}" class="btn btn-sm btn-outline-danger fs-6"
+                                                   onclick="return confirm('Are you sure you want to delete this category?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-muted py-3 fs-6">
+                                                <i class="fas fa-info-circle me-2"></i>No categories found.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <!-- Search Script -->
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#categoryTable tbody tr");
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+
+    <style>
+        body, table, input, button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .main-content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-scroll {
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+        }
+
+        .btn-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: #fff;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
+        }
+
+        .table-card {
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        table.table thead {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        table.table td, table.table th {
+            padding: 0.9rem;
+        }
+
+        table.table tbody tr:hover {
+            background-color: #eef5ff;
+            transition: background 0.2s ease;
+        }
+
+        #searchInput {
+            border-radius: 0.5rem;
+        }
+    </style>
+</body>
+</html>

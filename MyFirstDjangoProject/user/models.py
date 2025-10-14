@@ -1,9 +1,7 @@
 from django.db import models
-from datetime import datetime
 from django.utils import timezone
 from django.utils.html import mark_safe
 import os, random
-
 
 # ✅ Generate unique file path for uploaded profile images
 def image_path(instance, filename):
@@ -11,6 +9,7 @@ def image_path(instance, filename):
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
     randomstr = ''.join(random.choice(chars) for _ in range(10))
     return f'profilepic/{basefilename}_{randomstr}{file_extension}'
+
 
 # =========================
 # ✅ USER PROFILE MODEL
@@ -46,18 +45,34 @@ class UserProfile(models.Model):
     def is_admin(self):
         return self.role == 'admin'
 
+
+# =========================
+# ✅ CATEGORY MODEL
+# =========================
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Category Name")
+    description = models.TextField(null=True, blank=True, verbose_name="Description")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
 # =========================
 # ✅ INVENTORY ITEM MODEL
 # =========================
 class InventoryItem(models.Model):
     ItemID = models.AutoField(primary_key=True)
     ItemName = models.CharField(max_length=100)
-    Category = models.CharField(max_length=50, null=True, blank=True)
-    Quantity = models.IntegerField(default=0, null=True, blank=True)
+    Category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    Quantity = models.PositiveIntegerField(default=0)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
     Description = models.TextField(null=True, blank=True)
     DateAdded = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.ItemName} ({self.Category if self.Category else 'No Category'})"
+        return f"{self.ItemName} ({self.Category.name if self.Category else 'No Category'})"

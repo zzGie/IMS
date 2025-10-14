@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import IntegrityError
 from django.contrib.auth.hashers import make_password, check_password
-from .models import UserProfile, InventoryItem
+from .models import UserProfile, InventoryItem, Category  # ✅ Import Category
 import json
-from django.core import serializers
 import openpyxl
 from django.http import HttpResponse
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, F
+
 # -------------------------
 # ✅ Custom Decorators
 # -------------------------
@@ -34,7 +34,6 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-
         try:
             user = UserProfile.objects.get(username=username)
         except UserProfile.DoesNotExist:
@@ -42,25 +41,21 @@ def login(request):
             return redirect("login")
 
         if check_password(password, user.password):
-            # ✅ Save important user info in session
             request.session['user_id'] = user.id
             request.session['username'] = user.username
-            request.session['fullname'] = user.fullname     # 👈 Added this line
+            request.session['fullname'] = user.fullname
             request.session['role'] = user.role
-
             messages.success(request, f"✅ Welcome, {user.fullname}!")
             return redirect("index")
         else:
             messages.error(request, "⚠️ Invalid username or password.")
             return redirect("login")
-
     return render(request, "user/login.html")
 
-
 def logout_view(request):
-    
+    request.session.flush()
     messages.success(request, "You have been logged out successfully.")
-    return redirect('login')  # Redirect to login page
+    return redirect('login')
 
 def register(request):
     if request.method == "POST":
@@ -73,12 +68,9 @@ def register(request):
         gender = request.POST.get('gender')
         contact_number = request.POST.get('contact_number')
 
-        # Password match check
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return redirect('register')
-
-        # Check for duplicates
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
             return redirect('register')
@@ -89,7 +81,6 @@ def register(request):
             messages.error(request, "Contact number already exists.")
             return redirect('register')
 
-        # Save user
         user = UserProfile(
             fullname=fullname,
             email=email,
@@ -102,7 +93,6 @@ def register(request):
         user.save()
         messages.success(request, "Registration successful. You can now login.")
         return redirect('login')
-
     return render(request, "user/register.html")
 
 # -------------------------
@@ -110,17 +100,13 @@ def register(request):
 # -------------------------
 @login_view
 def index(request):
-    # ✅ Fetch and sort items (Low → High Quantity)
     items = InventoryItem.objects.all().order_by('Quantity')
-
-    # ✅ Get stats
     active_users = UserProfile.objects.count()
-    low_stock_items = InventoryItem.objects.filter(Quantity__lt=10)  # FIXED
+    low_stock_items = InventoryItem.objects.filter(Quantity__lt=10)
     low_stock = low_stock_items.count()
     high_stock = InventoryItem.objects.filter(Quantity__gte=20).count()
     total_quantity = sum(item.Quantity for item in items)
 
-    # ✅ Stock status
     if total_quantity < 20:
         stock_status = "Low Stock"
         stock_class = "bg-gradient-danger"
@@ -131,15 +117,11 @@ def index(request):
         stock_status = "High Stock"
         stock_class = "bg-gradient-success"
 
-    # ✅ Low stock alert message
     if low_stock_items.exists():
         low_names = ", ".join([item.ItemName for item in low_stock_items])
         messages.warning(request, f"⚠️ Low stock alert: {low_names}")
 
-    # ✅ Chart data for JavaScript
-    inventory_list = [
-        {"name": item.ItemName, "quantity": item.Quantity} for item in items
-    ]
+    inventory_list = [{"name": item.ItemName, "quantity": item.Quantity} for item in items]
 
     context = {
         "active_users": active_users,
@@ -148,16 +130,15 @@ def index(request):
         "total_quantity": total_quantity,
         "stock_status": stock_status,
         "stock_class": stock_class,
-        "inventory_list": json.dumps(inventory_list),  # ✅ JSON-safe for JS
+        "inventory_list": json.dumps(inventory_list),
         "items": items,
     }
-
     return render(request, "user/index.html", context)
+
 # -------------------------
 # ✅ User CRUD
 # -------------------------
 @login_view
-
 def userlist(request):
     return render(request, "user/userlist.html", {"user_list": UserProfile.objects.all()})
 
@@ -178,7 +159,7 @@ def adduser(request):
             )
             user.save()
             messages.success(request, "✅ User added successfully!")
-            return redirect("userlist")  # 👈 Redirects to userlist after saving
+            return redirect("userlist")
         except IntegrityError:
             messages.error(request, "⚠️ Email, Contact Number, or Username already exists.")
             return redirect("adduser")
@@ -215,19 +196,22 @@ def deleteuser(request, id):
     messages.success(request, "🗑️ User deleted successfully!")
     return redirect("userlist")
 
-# -------------------------
-# ✅ Inventory CRUD
-# -------------------------
-@login_view
+
 def inventory_list(request):
-    inventory_list = InventoryItem.objects.all().order_by('-DateAdded')
-    total_stock = sum(item.Quantity for item in inventory_list)
-    total_value = sum(item.Quantity * item.Price for item in inventory_list)
-    return render(request, "inventory/inventory_list.html", {"inventory_list": inventory_list, "total_stock": total_stock, "total_value": total_value})
+    items = InventoryItem.objects.select_related('Category').all().order_by('-DateAdded')
+    total_stock = items.aggregate(total=Sum('Quantity'))['total'] or 0
+    total_value = items.aggregate(total=Sum(F('Quantity') * F('Price')))['total'] or 0.0
+
+    context = {
+        'inventory_list': items,
+        'total_stock': total_stock,
+        'total_value': total_value,
+    }
+    return render(request, 'inventory/inventory_list.html', context)
+
 
 @login_view
 def inventory_detail(request, item_id):
-    # Fetch the inventory item by its primary key (ItemID)
     item = get_object_or_404(InventoryItem, ItemID=item_id)
     return render(request, "inventory/inventory_detail.html", {"item": item})
 
@@ -235,94 +219,181 @@ def inventory_detail(request, item_id):
 @login_view
 @admin_required
 def add_inventory_item(request):
-    if request.method == 'POST':
+    categories = Category.objects.all()
+
+    if request.method == "POST":
+        item_name = request.POST.get("ItemName", "").strip()
+        category_id = request.POST.get("Category")
+        quantity = request.POST.get("Quantity")
+        price = request.POST.get("Price")
+        description = request.POST.get("Description", "").strip()
+
+        # Validate required fields
+        if not item_name or not price:
+            messages.error(request, "Item Name and Price are required.")
+            return render(request, "inventory/add_inventory_item.html", {"categories": categories})
+
+        # Convert types safely
         try:
-            InventoryItem.objects.create(
-                ItemName=request.POST.get('ItemName'),
-                Category=request.POST.get('Category'),
-                Quantity=request.POST.get('Quantity') or 0,
-                Price=request.POST.get('Price') or 0,
-                Description=request.POST.get('Description')
-            )
-            messages.success(request, '✅ Item added successfully!')
-            return redirect('inventory_list')
-        except Exception as e:
-            messages.error(request, f'❌ Error adding item: {e}')
-            return redirect('add_inventory_item')
-    return render(request, 'inventory/add_inventory_item.html')
+            quantity = int(quantity) if quantity else 0
+        except ValueError:
+            quantity = 0
+
+        try:
+            price = float(price)
+        except ValueError:
+            messages.error(request, "Invalid price format.")
+            return render(request, "inventory/add_inventory_item.html", {"categories": categories})
+
+        # Get category object if selected
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                messages.warning(request, "Selected category does not exist. Item will have no category.")
+
+        # Create item
+        InventoryItem.objects.create(
+            ItemName=item_name,
+            Category=category,
+            Quantity=quantity,
+            Price=price,
+            Description=description
+        )
+
+        messages.success(request, f"Item '{item_name}' added successfully!")
+        return redirect("inventory_list")
+
+    return render(request, "inventory/add_inventory_item.html", {"categories": categories})
+
 
 @login_view
-
+@admin_required
 def edit_inventory_item(request, item_id):
     item = get_object_or_404(InventoryItem, ItemID=item_id)
+    categories = Category.objects.all()
+
     if request.method == 'POST':
-        item.ItemName = request.POST.get('ItemName')
-        item.Category = request.POST.get('Category')
-        item.Quantity = request.POST.get('Quantity') or 0
-        item.Price = request.POST.get('Price') or 0
-        item.Description = request.POST.get('Description')
+        item_name = request.POST.get('ItemName', '').strip()
+        category_id = request.POST.get('Category')
+        quantity = request.POST.get('Quantity', 0)
+        price = request.POST.get('Price', 0)
+        description = request.POST.get('Description', '').strip()
+
+        # Safe conversions
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            quantity = 0
+
+        try:
+            price = float(price)
+        except ValueError:
+            price = 0.0
+
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                category = None
+
+        # Update item
+        item.ItemName = item_name
+        item.Category = category
+        item.Quantity = quantity
+        item.Price = price
+        item.Description = description
         item.save()
+
         messages.success(request, '✏️ Item updated successfully!')
         return redirect('inventory_list')
-    return render(request, 'inventory/edit_inventory_item.html', {'item': item})
+
+    return render(request, 'inventory/edit_inventory_item.html', {'item': item, 'categories': categories})
+
 
 @login_view
 @admin_required
 def delete_inventory_item(request, item_id):
-    get_object_or_404(InventoryItem, ItemID=item_id).delete()
+    item = get_object_or_404(InventoryItem, ItemID=item_id)
+    item.delete()
     messages.success(request, '🗑️ Item deleted successfully!')
     return redirect('inventory_list')
-
+# -------------------------
+# ✅ Category CRUD
+# -------------------------
+@login_view
+def category_list(request):
+    categories = Category.objects.all().order_by('name')  # or 'category_name' depending on your model
+    return render(request, 'category/category_list.html', {'category_list': categories})
 
 
 @login_view
 @admin_required
-def reports_dashboard(request):
-    from django.db.models import Sum, Count
+def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        if Category.objects.filter(name=name).exists():
+            messages.error(request, f"⚠️ Category '{name}' already exists.")
+            return redirect('add_category')
+        Category.objects.create(name=name, description=description)
+        messages.success(request, f"✅ Category '{name}' added successfully!")
+        return redirect('category_list')
+    return render(request, 'category/add_category.html')
 
-    total_items = InventoryItem.objects.count()
-    total_quantity = InventoryItem.objects.aggregate(Sum('Quantity'))['Quantity__sum'] or 0
-    total_value = InventoryItem.objects.aggregate(total=Sum('Price'))['total'] or 0
+@login_view
+@admin_required
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        name = request.POST.get('category_name')  # match your template
+        description = request.POST.get('description')
 
-    category_stats = (
-        InventoryItem.objects
-        .values('Category')
-        .annotate(total_items=Count('id'), total_quantity=Sum('Quantity'))
-        .order_by('Category')
-    )
+        if Category.objects.filter(name=name).exclude(id=category_id).exists():
+            messages.error(request, f"⚠️ Category '{name}' already exists.")
+            return redirect('edit_category', category_id=category_id)
 
-    context = {
-        'total_items': total_items,
-        'total_quantity': total_quantity,
-        'total_value': total_value,
-        'category_stats': category_stats,
-    }
+        category.name = name
+        category.description = description
+        category.save()
+        messages.success(request, f"✏️ Category '{name}' updated successfully!")
+        return redirect('category_list')
 
-    return render(request, 'reports/reports_dashboard.html', context)
+    return render(request, 'category/edit_category.html', {'category': category})
 
+@login_view
+@admin_required
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    category_name = category.name
+    category.delete()
+    messages.success(request, f"🗑️ Category '{category_name}' deleted successfully!")
+    return redirect('category_list')
+
+# -------------------------
+# ✅ Reports & Excel Export
+# -------------------------
 
 @login_view
 @admin_required
 def reports_dashboard(request):
-    from django.db.models import Sum, Count, F
-
-    # ✅ Summary Totals
+    # Total inventory stats
     total_items = InventoryItem.objects.count()
     total_quantity = InventoryItem.objects.aggregate(total_qty=Sum('Quantity'))['total_qty'] or 0
-    total_value = InventoryItem.objects.aggregate(
-        total_value=Sum(F('Quantity') * F('Price'))
-    )['total_value'] or 0
+    total_value = InventoryItem.objects.aggregate(total_value=Sum(F('Quantity') * F('Price')))['total_value'] or 0
 
-    # ✅ Category Breakdown
+    # Category-wise stats
     category_stats = (
         InventoryItem.objects
-        .values('Category')
+        .values('Category__name')  # <-- fixed field name
         .annotate(
             total_items=Count('ItemID'),
             total_quantity=Sum('Quantity'),
             total_value=Sum(F('Quantity') * F('Price'))
         )
-        .order_by('Category')
+        .order_by('Category__name')
     )
 
     context = {
@@ -331,28 +402,34 @@ def reports_dashboard(request):
         'total_value': total_value,
         'category_stats': category_stats,
     }
-
     return render(request, 'reports/reports_dashboard.html', context)
-
 
 
 @login_view
 @admin_required
 def export_inventory_excel(request):
-    # Create an Excel workbook
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Inventory"
 
-    # Add header row
-    ws.append(["ItemID", "ItemName", "Quantity", "Price"])  # Adjust columns
+    # Header row
+    ws.append(["ItemID", "ItemName", "Category", "Quantity", "Price"])
 
-    # Add data
-    for item in InventoryItem.objects.all():
-        ws.append([item.ItemID, item.ItemName, item.Quantity, item.Price])
+    # Data rows
+    for item in InventoryItem.objects.select_related('Category').all():
+        ws.append([
+            item.ItemID,
+            item.ItemName,
+            item.Category.name if item.Category else "",  # <-- fixed field name
+            item.Quantity,
+            float(item.Price)
+        ])
 
-    # Prepare response
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # Response
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
     response['Content-Disposition'] = 'attachment; filename=inventory.xlsx'
     wb.save(response)
     return response
+

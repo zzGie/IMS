@@ -17,10 +17,10 @@
                             <i class="fas fa-chart-pie me-2"></i> Reports Dashboard
                         </h1>
 
-                         <!-- Export Button -->
-    <a href="{% url 'export_inventory_excel' %}" class="btn btn-success mb-3">
-        <i class="fas fa-file-excel me-2"></i> Export to Excel
-    </a>
+                        <!-- Export Button -->
+                        <a href="{% url 'export_inventory_excel' %}" class="btn btn-success mb-3">
+                            <i class="fas fa-file-excel me-2"></i> Export to Excel
+                        </a>
                     </div>
 
                     <!-- Summary Cards -->
@@ -58,18 +58,20 @@
                                             <th>Category</th>
                                             <th>Total Items</th>
                                             <th>Total Quantity</th>
+                                            <th>Total Value (₱)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for cat in category_stats %}
                                         <tr>
-                                            <td>{{ cat.Category|default:"No Category" }}</td>
+                                            <td>{{ cat.Category__name|default:"No Category" }}</td>
                                             <td>{{ cat.total_items }}</td>
                                             <td>{{ cat.total_quantity }}</td>
+                                            <td>₱{{ cat.total_value|floatformat:2 }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="3" class="text-center text-muted py-4">
+                                            <td colspan="4" class="text-center text-muted py-4">
                                                 <i class="fas fa-info-circle me-2"></i>No data available.
                                             </td>
                                         </tr>
@@ -90,7 +92,7 @@
     {% include "partials/scripts.html" %}
 
     <style>
-        /* Reuse existing dashboard styles */
+        /* Table scrolling and glass effect */
         .table-scroll {
             max-height: 60vh;
             overflow-y: auto;
@@ -105,6 +107,9 @@
             background: rgba(255,255,255,0.9);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.2);
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
         }
     </style>
 
