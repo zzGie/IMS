@@ -21,8 +21,7 @@ urlpatterns = [
     path('inventory/<int:item_id>/', views.inventory_detail, name='inventory_detail'),
     path('inventory/edit/<int:item_id>/', views.edit_inventory_item, name='edit_inventory_item'),
     path('inventory/delete/<int:item_id>/', views.delete_inventory_item, name='delete_inventory_item'),
-    path('categories/', views.category_list, name='category_list'),
-
+    
 
     path('reports/', views.reports_dashboard, name='reports_dashboard'),
     path('export_inventory_excel/', views.export_inventory_excel, name='export_inventory_excel'),

@@ -273,11 +273,7 @@ def delete_inventory_item(request, item_id):
     messages.success(request, '🗑️ Item deleted successfully!')
     return redirect('inventory_list')
 
-@login_view
-@admin_required
-def category_list(request):
-    categories = InventoryItem.objects.all()
-    return render(request, 'inventory/category_list.html', {'categories': categories})
+
 
 @login_view
 @admin_required
