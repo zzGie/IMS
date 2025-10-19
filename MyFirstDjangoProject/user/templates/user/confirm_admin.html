@@ -1,0 +1,137 @@
+{% include "partials/header.html" %}
+
+<body class="sb-nav-fixed bg-light">
+
+    {% include "partials/navbar.html" %}
+
+    <div id="layoutSidenav">
+        {% include "partials/sidebar.html" %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 py-4">
+
+                    <!-- 🧭 Page Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="fw-bold text-primary mb-1">
+                                <i class="fas fa-user-shield me-2"></i> Confirm Admin Access
+                            </h1>
+                            <ol class="breadcrumb mt-2 mb-0 bg-transparent p-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'index' %}" class="text-decoration-none text-muted">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'userlist' %}" class="text-decoration-none text-muted">Users</a>
+                                </li>
+                                <li class="breadcrumb-item active text-primary fw-semibold">Confirm Admin</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- 💬 Alert Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- 👥 Pending Admin Requests -->
+                    <div class="card shadow border-0 form-card">
+                        <div class="card-header bg-gradient-primary text-white fw-bold">
+                            <i class="fas fa-user-cog me-2"></i> Pending Admin Requests
+                        </div>
+
+                        <div class="card-body p-4">
+                            {% if pending_users %}
+                                <div class="table-responsive">
+                                    <table class="table table-bordered align-middle text-center">
+                                        <thead class="table-primary text-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Full Name</th>
+                                                <th>Email</th>
+                                                <th>Username</th>
+                                                <th>Current Role</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in pending_users %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ user.fullname }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>{{ user.username }}</td>
+                                                <td>{{ user.role|title }}</td>
+                                                <td>
+                                                    <form method="POST" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                        <button type="submit" name="action" value="accept" class="btn btn-success btn-sm">
+                                                            <i class="fas fa-check-circle"></i> Accept
+                                                        </button>
+                                                    </form>
+                                                    <form method="POST" class="d-inline ms-1">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                        <button type="submit" name="action" value="decline" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-times-circle"></i> Decline
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info text-center mb-0">
+                                    <i class="fas fa-info-circle me-2"></i> No pending admin requests at the moment.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            {% include "partials/footer.html" %}
+        </div>
+    </div>
+
+    {% include "partials/scripts.html" %}
+
+    <!-- 🎨 Styling -->
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+        }
+
+        .form-card {
+            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.75rem;
+        }
+
+        table th, table td {
+            vertical-align: middle !important;
+        }
+
+        .btn-gradient-primary {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
+        }
+    </style>
+
+</body>
+</html>
