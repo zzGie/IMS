@@ -58,6 +58,9 @@ def logout_view(request):
     return redirect('login')
 
 def register(request):
+    """
+    If a user registers with the 'admin' role, mark them as pending for confirmation.
+    """
     if request.method == "POST":
         fullname = request.POST.get('fullname')
         email = request.POST.get('email')
@@ -81,18 +84,30 @@ def register(request):
             messages.error(request, "Contact number already exists.")
             return redirect('register')
 
-        user = UserProfile(
+        # If they selected admin, mark as pending confirmation
+        is_pending_admin = False
+        if role == 'admin':
+            is_pending_admin = True
+            role = 'pending_admin'
+
+        user = UserProfile.objects.create(
             fullname=fullname,
             email=email,
             username=username,
             password=make_password(password),
             role=role,
             gender=gender,
-            contact_number=contact_number
+            contact_number=contact_number,
+            is_pending_admin=is_pending_admin
         )
-        user.save()
-        messages.success(request, "Registration successful. You can now login.")
-        return redirect('login')
+
+        if is_pending_admin:
+            messages.info(request, "🕒 Your admin request is pending approval. Wait for confirmation.")
+            return redirect('confirm_admin')
+        else:
+            messages.success(request, "✅ Registration successful. You can now log in.")
+            return redirect('login')
+
     return render(request, "user/register.html")
 
 # -------------------------
@@ -433,3 +448,34 @@ def export_inventory_excel(request):
     wb.save(response)
     return response
 
+# -------------------------
+# ✅ Admin Confirmation
+# -------------------------
+@login_view
+@admin_required
+def confirm_admin(request):
+    """
+    Show all users requesting admin access.
+    Approve or decline them.
+    """
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        action = request.POST.get("action")
+        try:
+            user = UserProfile.objects.get(id=user_id)
+            if action == "accept":
+                user.role = "admin"
+                user.is_pending_admin = False
+                user.save()
+                messages.success(request, f"✅ {user.fullname} is now an admin!")
+            elif action == "decline":
+                user.role = "user"
+                user.is_pending_admin = False
+                user.save()
+                messages.warning(request, f"❌ {user.fullname}'s admin request was declined.")
+        except UserProfile.DoesNotExist:
+            messages.error(request, "⚠️ User not found.")
+        return redirect("confirm_admin")
+
+    pending_users = UserProfile.objects.filter(is_pending_admin=True)
+    return render(request, "user/confirm_admin.html", {"pending_users": pending_users})
